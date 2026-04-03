@@ -275,9 +275,10 @@ async function sendAI(){
   status.innerHTML='Analyse en cours <span class="dots"><span>.</span><span>.</span><span>.</span></span>';
   const nowStr=new Date().toLocaleString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:`Tu analyses des demandes de rappels en français et retournes UNIQUEMENT du JSON valide, sans backticks ni commentaires.\nDate et heure actuelles : ${nowStr}\nFormat JSON :\n{"reminders":[{"message":"texte court (max 50 chars)","datetime":"2025-01-15T14:30:00","importance":"normal"}],"summary":"phrase résumant ce qui a été créé"}\nRègles :\n- Calcule les heures exactes depuis maintenant\n- importance = "urgent" si urgent/important/critique mentionné, sinon "normal"\n- Pour rappels répétés créé un rappel par occurrence (max 12)\n- datetime ISO 8601 local sans timezone\n- Messages clairs et concis`,messages:[{role:'user',content:input}]})});
+    const WORKER='https://rappel-ia.joel-bevilacqua0667.travailleurs.dev';
+    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'system',content:`Tu analyses des demandes de rappels en français et retournes UNIQUEMENT du JSON valide, sans backticks ni commentaires.\nDate et heure actuelles : ${nowStr}\nFormat JSON :\n{"reminders":[{"message":"texte court (max 50 chars)","datetime":"2025-01-15T14:30:00","importance":"normal"}],"summary":"phrase résumant ce qui a été créé"}\nRègles :\n- Calcule les heures exactes depuis maintenant\n- importance = "urgent" si urgent/important/critique mentionné, sinon "normal"\n- Pour rappels répétés crée un rappel par occurrence (max 12)\n- datetime ISO 8601 local sans timezone\n- Messages clairs et concis`},{role:'user',content:input}]})});
     const data=await res.json();
-    const raw=data.content?.[0]?.text||'';
+    const raw=data.choices?.[0]?.message?.content||'';
     let parsed;
     try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim())}catch(e){throw new Error('Réponse IA invalide')}
     const now=new Date();
