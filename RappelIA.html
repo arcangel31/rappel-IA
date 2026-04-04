@@ -718,7 +718,7 @@ function speakReminder(message, importance){
 }
 
 function testRemindVoice(imp){
-  const msg=imp==='urgent'?'Rappel urgent ! Vérifier vos positions de trading maintenant.':'Rappel : Pensez à boire de l'eau.';
+  const msg=imp==='urgent'?'Rappel urgent ! Vérifier vos positions de trading maintenant.':'Rappel : Pensez à boire de l\u0027eau.';
   // Temporarily enable for test
   const wasOff=!cfg.remindVoice;
   cfg.remindVoice=true;
