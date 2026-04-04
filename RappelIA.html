@@ -6,86 +6,135 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0F0F14">
-<title>RappelIA</title>
 <link rel="manifest" href="./manifest.json">
+<title>RappelIA</title>
 <style>
-:root{--c-normal:#4A9EFF;--c-urgent:#FF4F4F;--c-bg:#0F0F14;--c-bg2:#1A1A22;--c-bg3:#242430;--c-border:rgba(255,255,255,0.07);--c-border2:rgba(255,255,255,0.13);--c-text:#EDEDF4;--c-muted:#888899;--c-hint:#44445A}
-@media(prefers-color-scheme:light){:root{--c-bg:#F5F5FA;--c-bg2:#FFFFFF;--c-bg3:#EAEAF2;--c-border:rgba(0,0,0,0.07);--c-border2:rgba(0,0,0,0.12);--c-text:#111120;--c-muted:#6A6A80;--c-hint:#AAAAC0}}
+:root{--cn:#4A9EFF;--cu:#FF4F4F;--cg:#2ECC71;--bg:#0F0F14;--bg2:#1A1A22;--bg3:#242430;--bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.13);--tx:#EDEDF4;--mt:#888899;--ht:#44445A}
+@media(prefers-color-scheme:light){:root{--bg:#F5F5FA;--bg2:#FFFFFF;--bg3:#EAEAF2;--bd:rgba(0,0,0,0.07);--bd2:rgba(0,0,0,0.12);--tx:#111120;--mt:#6A6A80;--ht:#AAAAC0}}
+body.force-dark{--bg:#0F0F14;--bg2:#1A1A22;--bg3:#242430;--bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.13);--tx:#EDEDF4;--mt:#888899;--ht:#44445A}
+body.force-light{--bg:#F5F5FA;--bg2:#FFFFFF;--bg3:#EAEAF2;--bd:rgba(0,0,0,0.07);--bd2:rgba(0,0,0,0.12);--tx:#111120;--mt:#6A6A80;--ht:#AAAAC0}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--c-bg)}
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--c-text)}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
 .app{max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden}
-.hdr{background:var(--c-bg2);border-bottom:0.5px solid var(--c-border);padding:14px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+
+/* Header */
+.hdr{background:var(--bg2);border-bottom:0.5px solid var(--bd);padding:14px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .hdr-icon{width:38px;height:38px;border-radius:12px;background:rgba(74,158,255,0.1);border:0.5px solid rgba(74,158,255,0.25);display:flex;align-items:center;justify-content:center;font-size:20px}
 .hdr-title{font-size:16px;font-weight:600;letter-spacing:-0.3px}
-.hdr-sub{font-size:11px;color:var(--c-muted);margin-top:1px}
-.hdr-clock{margin-left:auto;font-size:14px;font-weight:500;color:var(--c-muted);font-variant-numeric:tabular-nums;letter-spacing:.5px}
-.scroll{flex:1;overflow-y:auto;padding-bottom:20px}
-.scroll::-webkit-scrollbar{width:3px}
-.scroll::-webkit-scrollbar-thumb{background:var(--c-border2);border-radius:3px}
+.hdr-sub{font-size:11px;color:var(--mt);margin-top:1px}
+.hdr-clock{margin-left:auto;font-size:14px;font-weight:500;color:var(--mt);font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.hdr-settings{width:36px;height:36px;border-radius:10px;background:var(--bg3);border:0.5px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
+
+/* Pages */
+.page{flex:1;overflow-y:auto;padding-bottom:20px;display:none}
+.page.active{display:block}
+.page::-webkit-scrollbar{width:3px}
+.page::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+
+/* Banners */
 .banner{margin:10px 12px 0;border-radius:12px;padding:10px 14px;font-size:12px;display:flex;align-items:center;gap:8px;cursor:pointer}
-.banner-warn{background:rgba(255,140,0,0.1);border:0.5px solid rgba(255,140,0,0.3);color:#FF8C00}
-.banner-ok{background:rgba(74,158,255,0.08);border:0.5px solid rgba(74,158,255,0.22);color:var(--c-normal);cursor:default}
-.ai-card{margin:12px;background:var(--c-bg2);border-radius:16px;border:0.5px solid var(--c-border)}
-.ai-lbl{padding:12px 14px 0;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--c-muted)}
-.ai-ta{width:100%;border:none;background:transparent;color:var(--c-text);font-size:14px;font-family:inherit;padding:10px 14px;resize:none;outline:none;line-height:1.55;min-height:72px}
-.ai-ta::placeholder{color:var(--c-hint)}
-.ai-foot{padding:8px 10px;display:flex;align-items:center;gap:8px;border-top:0.5px solid var(--c-border)}
-.chips{display:flex;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
-.chip{font-size:11px;padding:5px 10px;border-radius:20px;background:var(--c-bg3);border:0.5px solid var(--c-border);color:var(--c-muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
-.chip:active{background:var(--c-border2)}
-.btns-row{display:flex;gap:8px;padding:8px 10px;border-top:0.5px solid var(--c-border)}
-.mic-btn{flex:1;height:44px;border-radius:12px;border:0.5px solid var(--c-border2);background:var(--c-bg3);color:var(--c-muted);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s;user-select:none;-webkit-user-select:none}
-.mic-btn.listening{background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.4);color:var(--c-urgent);animation:micPulse .8s ease-in-out infinite}
-@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,79,79,.3)}50%{box-shadow:0 0 0 8px rgba(255,79,79,.06)}}
-.ai-btn{width:44px;height:44px;border-radius:12px;border:none;background:var(--c-normal);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s,transform .12s}
-.ai-btn:disabled{opacity:.35;cursor:not-allowed}
-.ai-btn:active:not(:disabled){transform:scale(.9)}
-.ai-status{padding:6px 14px 10px;font-size:12px;color:var(--c-muted);min-height:30px;font-style:italic}
-.sec-lbl{padding:4px 16px 6px;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--c-muted)}
+.bwarn{background:rgba(255,140,0,0.1);border:0.5px solid rgba(255,140,0,0.3);color:#FF8C00}
+.bok{background:rgba(74,158,255,0.08);border:0.5px solid rgba(74,158,255,0.22);color:var(--cn);cursor:default}
+
+/* Weather */
+.wx-card{margin:10px 12px 0;background:var(--bg2);border-radius:16px;border:0.5px solid var(--bd);padding:14px}
+.wx-main{display:flex;align-items:center;gap:12px}
+.wx-icon{font-size:32px;flex-shrink:0}
+.wx-info{flex:1}
+.wx-temp{font-size:22px;font-weight:600}
+.wx-desc{font-size:12px;color:var(--mt);margin-top:2px}
+.wx-status{font-size:11px;color:var(--mt);margin-top:8px;font-style:italic;min-height:14px}
+
+/* AI Card */
+.ai-card{margin:12px;background:var(--bg2);border-radius:16px;border:0.5px solid var(--bd)}
+.ai-lbl{padding:12px 14px 0;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--mt)}
+.ai-ta{width:100%;border:none;background:transparent;color:var(--tx);font-size:14px;font-family:inherit;padding:10px 14px;resize:none;outline:none;line-height:1.55;min-height:72px}
+.ai-ta::placeholder{color:var(--ht)}
+.ai-foot{padding:8px 10px;display:flex;align-items:center;gap:6px;border-top:0.5px solid var(--bd);overflow-x:auto;scrollbar-width:none}
+.ai-foot::-webkit-scrollbar{display:none}
+.chip{font-size:11px;padding:5px 10px;border-radius:20px;background:var(--bg3);border:0.5px solid var(--bd);color:var(--mt);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.chip:active{background:var(--bd2)}
+.btns-row{padding:8px 10px;display:flex;gap:8px;border-top:0.5px solid var(--bd)}
+.mic-btn{flex:1;height:44px;border-radius:12px;border:0.5px solid var(--bd2);background:var(--bg3);color:var(--mt);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s}
+.mic-btn.listening{background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.4);color:var(--cu);animation:mpulse .8s ease-in-out infinite}
+@keyframes mpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,79,79,.3)}50%{box-shadow:0 0 0 8px rgba(255,79,79,.06)}}
+.send-btn{width:44px;height:44px;border-radius:12px;border:none;background:var(--cn);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s,transform .12s}
+.send-btn:disabled{opacity:.35;cursor:not-allowed}
+.send-btn:active:not(:disabled){transform:scale(.9)}
+.ai-status{padding:6px 14px 10px;font-size:12px;color:var(--mt);min-height:30px;font-style:italic}
+
+/* List */
+.sec-lbl{padding:4px 16px 6px;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--mt)}
 .list{margin:0 12px;display:flex;flex-direction:column;gap:8px}
-.r-card{background:var(--c-bg2);border-radius:14px;border:0.5px solid var(--c-border);padding:13px 14px;display:flex;align-items:center;gap:12px;animation:slIn .22s ease}
-@keyframes slIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.r-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
-.r-icon.normal{background:rgba(74,158,255,0.1)}
-.r-icon.urgent{background:rgba(255,79,79,0.1)}
+.r-card{background:var(--bg2);border-radius:14px;border:0.5px solid var(--bd);padding:13px 14px;display:flex;align-items:center;gap:12px;animation:slin .22s ease}
+@keyframes slin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.r-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.r-ico.normal{background:rgba(74,158,255,0.1)}
+.r-ico.urgent{background:rgba(255,79,79,0.1)}
 .r-body{flex:1;min-width:0}
 .r-msg{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.r-meta{font-size:11px;color:var(--c-muted);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.r-meta{font-size:11px;color:var(--mt);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .r-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px}
-.r-badge.normal{background:rgba(74,158,255,0.12);color:var(--c-normal)}
-.r-badge.urgent{background:rgba(255,79,79,0.12);color:var(--c-urgent)}
-.r-del{width:30px;height:30px;border-radius:50%;background:transparent;border:0.5px solid var(--c-border);color:var(--c-muted);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.r-del:active{background:rgba(255,79,79,0.12);color:var(--c-urgent)}
-.empty{text-align:center;padding:52px 24px 24px;color:var(--c-hint)}
+.r-badge.normal{background:rgba(74,158,255,0.12);color:var(--cn)}
+.r-badge.urgent{background:rgba(255,79,79,0.12);color:var(--cu)}
+.r-del{width:30px;height:30px;border-radius:50%;background:transparent;border:0.5px solid var(--bd);color:var(--mt);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.r-del:active{background:rgba(255,79,79,0.12);color:var(--cu)}
+.empty{text-align:center;padding:52px 24px 24px;color:var(--ht)}
 .empty-icon{font-size:44px;margin-bottom:14px}
 .empty-text{font-size:14px;line-height:1.6}
-.voice-overlay{display:none;position:absolute;inset:0;z-index:50;background:rgba(0,0,0,0.88);align-items:center;justify-content:center;flex-direction:column;gap:20px}
-.voice-overlay.on{display:flex;animation:fdIn .2s ease}
-.voice-ring{width:100px;height:100px;border-radius:50%;background:rgba(255,79,79,0.12);border:2px solid rgba(255,79,79,0.4);display:flex;align-items:center;justify-content:center;font-size:42px;animation:voicePulse .7s ease-in-out infinite}
-@keyframes voicePulse{0%,100%{box-shadow:0 0 0 0 rgba(255,79,79,.4)}50%{box-shadow:0 0 0 24px rgba(255,79,79,.06)}}
-.voice-text{font-size:15px;color:rgba(255,255,255,0.7);text-align:center}
-.voice-transcript{font-size:18px;font-weight:500;color:#fff;text-align:center;padding:0 32px;min-height:28px}
-.voice-stop{padding:12px 28px;border-radius:40px;background:var(--c-urgent);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
-.alarm-wrap{display:none;position:absolute;inset:0;z-index:99;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:24px}
-.alarm-wrap.on{display:flex;animation:fdIn .25s ease}
-@keyframes fdIn{from{opacity:0}to{opacity:1}}
-.alarm-box{background:var(--c-bg2);border-radius:24px;border:0.5px solid var(--c-border2);padding:32px 24px;width:100%;max-width:340px;text-align:center}
-.alarm-anim{width:68px;height:68px;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:30px}
-.alarm-anim.normal{background:rgba(74,158,255,0.1);animation:pN 1.4s ease-in-out infinite}
-.alarm-anim.urgent{background:rgba(255,79,79,0.1);animation:pU .55s ease-in-out infinite}
-@keyframes pN{0%,100%{box-shadow:0 0 0 0 rgba(74,158,255,.3)}50%{box-shadow:0 0 0 14px rgba(74,158,255,.06)}}
-@keyframes pU{0%,100%{box-shadow:0 0 0 0 rgba(255,79,79,.4)}50%{box-shadow:0 0 0 18px rgba(255,79,79,.07)}}
+
+/* Settings Page */
+.set-section{margin:12px 12px 0}
+.set-title{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--mt);padding:0 4px 8px}
+.set-group{background:var(--bg2);border-radius:16px;border:0.5px solid var(--bd);overflow:hidden;margin-bottom:4px}
+.set-row{padding:13px 16px;display:flex;align-items:center;gap:12px;border-bottom:0.5px solid var(--bd)}
+.set-row:last-child{border-bottom:none}
+.set-ico{font-size:18px;flex-shrink:0;width:24px;text-align:center}
+.set-info{flex:1;min-width:0}
+.set-name{font-size:14px;font-weight:500}
+.set-hint{font-size:11px;color:var(--mt);margin-top:2px}
+.set-ctrl{flex-shrink:0}
+.tog{width:44px;height:26px;border-radius:13px;background:var(--bg3);border:0.5px solid var(--bd2);position:relative;cursor:pointer;transition:background .2s}
+.tog.on{background:var(--cn)}
+.tog-dot{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.tog.on .tog-dot{transform:translateX(18px)}
+.set-select{background:var(--bg3);border:0.5px solid var(--bd2);border-radius:8px;color:var(--tx);font-size:12px;padding:6px 10px;font-family:inherit;outline:none}
+.set-range{width:110px;accent-color:var(--cn)}
+.set-val{font-size:12px;color:var(--mt);min-width:32px;text-align:right}
+.set-time{background:var(--bg3);border:0.5px solid var(--bd2);border-radius:8px;color:var(--tx);font-size:12px;padding:6px 10px;font-family:inherit;outline:none}
+.test-btn{padding:6px 14px;border-radius:20px;background:rgba(74,158,255,0.12);border:0.5px solid rgba(74,158,255,0.3);color:var(--cn);font-size:12px;cursor:pointer}
+.test-btn:active{opacity:.7}
+
+/* Voice overlay */
+.voice-ov{display:none;position:absolute;inset:0;z-index:50;background:rgba(0,0,0,0.9);align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.voice-ov.on{display:flex;animation:fdin .2s ease}
+.v-ring{width:100px;height:100px;border-radius:50%;background:rgba(255,79,79,0.12);border:2px solid rgba(255,79,79,0.4);display:flex;align-items:center;justify-content:center;font-size:42px;animation:vpulse .7s ease-in-out infinite}
+@keyframes vpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,79,79,.4)}50%{box-shadow:0 0 0 24px rgba(255,79,79,.06)}}
+.v-hint{font-size:15px;color:rgba(255,255,255,0.6)}
+.v-trans{font-size:18px;font-weight:500;color:#fff;text-align:center;padding:0 32px;min-height:28px}
+.v-stop{padding:12px 28px;border-radius:40px;background:var(--cu);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer}
+
+/* Alarm overlay */
+.alarm-ov{display:none;position:absolute;inset:0;z-index:99;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:24px}
+.alarm-ov.on{display:flex;animation:fdin .25s ease}
+@keyframes fdin{from{opacity:0}to{opacity:1}}
+.alarm-box{background:var(--bg2);border-radius:24px;border:0.5px solid var(--bd2);padding:32px 24px;width:100%;max-width:340px;text-align:center}
+.alarm-ring{width:68px;height:68px;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:30px}
+.alarm-ring.normal{background:rgba(74,158,255,0.1);animation:pn 1.4s ease-in-out infinite}
+.alarm-ring.urgent{background:rgba(255,79,79,0.1);animation:pu .55s ease-in-out infinite}
+@keyframes pn{0%,100%{box-shadow:0 0 0 0 rgba(74,158,255,.3)}50%{box-shadow:0 0 0 14px rgba(74,158,255,.06)}}
+@keyframes pu{0%,100%{box-shadow:0 0 0 0 rgba(255,79,79,.4)}50%{box-shadow:0 0 0 18px rgba(255,79,79,.07)}}
 .alarm-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.8px;padding:3px 10px;border-radius:20px;margin-bottom:12px}
-.alarm-badge.normal{background:rgba(74,158,255,.12);color:var(--c-normal)}
-.alarm-badge.urgent{background:rgba(255,79,79,.12);color:var(--c-urgent)}
+.alarm-badge.normal{background:rgba(74,158,255,.12);color:var(--cn)}
+.alarm-badge.urgent{background:rgba(255,79,79,.12);color:var(--cu)}
 .alarm-msg{font-size:20px;font-weight:600;line-height:1.3;margin-bottom:6px}
-.alarm-time{font-size:13px;color:var(--c-muted);margin-bottom:28px}
-.alarm-ok{width:100%;padding:15px;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:opacity .15s,transform .1s}
-.alarm-ok.normal{background:var(--c-normal);color:#fff}
-.alarm-ok.urgent{background:var(--c-urgent);color:#fff}
-.alarm-ok:active{transform:scale(.97);opacity:.85}
+.alarm-time{font-size:13px;color:var(--mt);margin-bottom:28px}
+.alarm-ok{width:100%;padding:15px;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;border:none}
+.alarm-ok.normal{background:var(--cn);color:#fff}
+.alarm-ok.urgent{background:var(--cu);color:#fff}
+.alarm-ok:active{opacity:.85}
+
 @keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
 .dots span{animation:dot 1.2s infinite;display:inline-block}
 .dots span:nth-child(2){animation-delay:.2s}
@@ -98,36 +147,44 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--c-tex
     <div class="hdr-icon">🔔</div>
     <div>
       <div class="hdr-title">RappelIA</div>
-      <div class="hdr-sub">Rappels intelligents</div>
+      <div class="hdr-sub" id="hdr-sub">Rappels intelligents</div>
     </div>
     <div class="hdr-clock" id="clock">--:--</div>
+    <div class="hdr-settings" onclick="togglePage()" id="settings-btn">⚙️</div>
   </div>
 
-  <div class="scroll">
-    <div id="perm-banner" class="banner banner-warn" onclick="reqNotif()" style="display:none">
-      ⚠️ Activer les notifications écran de verrouillage → Appuyez ici
-    </div>
-    <div id="sw-ok" class="banner banner-ok" style="display:none">
-      ✓ Notifications en arrière-plan actives
+  <!-- PAGE PRINCIPALE -->
+  <div class="page active" id="page-main">
+    <div id="perm-banner" class="banner bwarn" onclick="reqNotif()" style="display:none">⚠️ Activer les notifications → Appuyez ici</div>
+    <div id="sw-ok" class="banner bok" style="display:none">✓ Notifications en arrière-plan actives</div>
+
+    <div class="wx-card">
+      <div class="wx-main">
+        <div class="wx-icon" id="wx-icon">🌤️</div>
+        <div class="wx-info">
+          <div class="wx-temp" id="wx-temp">--°C</div>
+          <div class="wx-desc" id="wx-desc">Appuyez pour localiser</div>
+        </div>
+        <button class="test-btn" id="wx-loc-btn" onclick="getLocation()" style="flex-shrink:0">📍 Localiser</button>
+      </div>
+      <div class="wx-status" id="wx-status"></div>
     </div>
 
     <div class="ai-card">
       <div class="ai-lbl">Créer des rappels via IA</div>
-      <textarea class="ai-ta" id="ai-input" placeholder="Parlez ou écrivez : ex. rappelle-moi de boire de l'eau toutes les heures pendant 4h"></textarea>
+      <textarea class="ai-ta" id="ai-input" placeholder="Parlez ou écrivez en français naturel..."></textarea>
       <div class="ai-foot">
-        <div class="chips">
-          <span class="chip" onclick="setIn('Boire de l\u0027eau toutes les 30 min pendant 2h')">💧 Eau ×4</span>
-          <span class="chip" onclick="setIn('Médicaments dans 1h, 4h et 8h — urgent')">💊 Médoc</span>
-          <span class="chip" onclick="setIn('Réunion dans 15 min — urgent')">📅 Réunion</span>
-          <span class="chip" onclick="setIn('Vérifier positions trading dans 30min, 1h et 2h — urgent')">📈 Trading</span>
-        </div>
+        <span class="chip" onclick="setIn('Boire de l\u0027eau toutes les 30 min pendant 2h')">💧 Eau</span>
+        <span class="chip" onclick="setIn('Médicaments dans 1h, 4h et 8h — urgent')">💊 Médoc</span>
+        <span class="chip" onclick="setIn('Réunion dans 15 min — urgent')">📅 Réunion</span>
+        <span class="chip" onclick="setIn('Vérifier positions trading dans 30min, 1h et 2h — urgent')">📈 Trading</span>
       </div>
       <div class="btns-row">
         <button class="mic-btn" id="mic-btn" onclick="toggleVoice()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
           Parler
         </button>
-        <button class="ai-btn" id="ai-btn" onclick="sendAI()">
+        <button class="send-btn" id="send-btn" onclick="sendAI()">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
@@ -138,20 +195,235 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--c-tex
     <div class="list" id="list"></div>
     <div class="empty" id="empty">
       <div class="empty-icon">🎙️</div>
-      <div class="empty-text">Appuyez sur <strong>Parler</strong> et dites ce dont<br>vous avez besoin en français naturel</div>
+      <div class="empty-text">Appuyez sur <strong>Parler</strong><br>et dictez vos rappels en français</div>
     </div>
   </div>
 
-  <div class="voice-overlay" id="voice-overlay">
-    <div class="voice-ring">🎙️</div>
-    <div class="voice-text">Je vous écoute...</div>
-    <div class="voice-transcript" id="voice-transcript"></div>
-    <button class="voice-stop" onclick="stopVoice()">Arrêter</button>
+  <!-- PAGE PARAMÈTRES -->
+  <div class="page" id="page-settings">
+
+    <div class="set-section">
+      <div class="set-title">🔊 Sons & Alarmes</div>
+      <div class="set-group">
+        <div class="set-row">
+          <div class="set-ico">🔔</div>
+          <div class="set-info"><div class="set-name">Sonnerie normale</div><div class="set-hint">Type de son pour rappels normaux</div></div>
+          <div class="set-ctrl">
+            <select class="set-select" id="s-sound-normal" onchange="saveSettings()">
+              <option value="sine">Doux (sine)</option>
+              <option value="triangle">Cristal</option>
+              <option value="square">Électro</option>
+              <option value="sawtooth">Aigu</option>
+            </select>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🚨</div>
+          <div class="set-info"><div class="set-name">Sonnerie urgente</div><div class="set-hint">Type de son pour rappels urgents</div></div>
+          <div class="set-ctrl">
+            <select class="set-select" id="s-sound-urgent" onchange="saveSettings()">
+              <option value="square">Urgent (square)</option>
+              <option value="sawtooth">Strident</option>
+              <option value="triangle">Pulsé</option>
+              <option value="sine">Doux</option>
+            </select>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🔈</div>
+          <div class="set-info"><div class="set-name">Volume</div><div class="set-hint">Volume des sonneries</div></div>
+          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
+            <input type="range" class="set-range" id="s-volume" min="1" max="10" value="5" oninput="updateVal('s-volume','s-volume-val');saveSettings()">
+            <span class="set-val" id="s-volume-val">5</span>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">⏱️</div>
+          <div class="set-info"><div class="set-name">Répétition normale</div><div class="set-hint">Secondes entre chaque sonnerie</div></div>
+          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
+            <input type="range" class="set-range" id="s-repeat-normal" min="2" max="30" value="5" oninput="updateVal('s-repeat-normal','s-rn-val');saveSettings()">
+            <span class="set-val" id="s-rn-val">5s</span>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">⚡</div>
+          <div class="set-info"><div class="set-name">Répétition urgente</div><div class="set-hint">Secondes entre chaque sonnerie</div></div>
+          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
+            <input type="range" class="set-range" id="s-repeat-urgent" min="1" max="10" value="3" oninput="updateVal('s-repeat-urgent','s-ru-val');saveSettings()">
+            <span class="set-val" id="s-ru-val">3s</span>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🧪</div>
+          <div class="set-info"><div class="set-name">Tester les sons</div><div class="set-hint">Écouter avant de valider</div></div>
+          <div class="set-ctrl" style="display:flex;gap:6px">
+            <button class="test-btn" onclick="testSound('normal')">Normal</button>
+            <button class="test-btn" onclick="testSound('urgent')" style="background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.3);color:var(--cu)">Urgent</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="set-section">
+      <div class="set-title">📳 Vibration</div>
+      <div class="set-group">
+        <div class="set-row">
+          <div class="set-ico">📳</div>
+          <div class="set-info"><div class="set-name">Vibration activée</div><div class="set-hint">Vibrer lors des rappels</div></div>
+          <div class="set-ctrl"><div class="tog on" id="t-vibration" onclick="toggleSetting('t-vibration','vibration')"><div class="tog-dot"></div></div></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">💥</div>
+          <div class="set-info"><div class="set-name">Pattern normal</div><div class="set-hint">Motif de vibration</div></div>
+          <div class="set-ctrl">
+            <select class="set-select" id="s-vib-normal" onchange="saveSettings()">
+              <option value="soft">Doux (court)</option>
+              <option value="medium">Moyen</option>
+              <option value="strong">Fort (long)</option>
+            </select>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">⚡</div>
+          <div class="set-info"><div class="set-name">Pattern urgent</div><div class="set-hint">Motif de vibration urgent</div></div>
+          <div class="set-ctrl">
+            <select class="set-select" id="s-vib-urgent" onchange="saveSettings()">
+              <option value="sos">SOS (3×3)</option>
+              <option value="rapid">Rapide répété</option>
+              <option value="strong">Fort continu</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="set-section">
+      <div class="set-title">🌤️ Météo</div>
+      <div class="set-group">
+        <div class="set-row">
+          <div class="set-ico">⏰</div>
+          <div class="set-info"><div class="set-name">Heure du rappel météo</div><div class="set-hint">Check météo quotidien</div></div>
+          <div class="set-ctrl"><input type="time" class="set-time" id="s-wx-time" value="07:30" onchange="saveSettings()"></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🗣️</div>
+          <div class="set-info"><div class="set-name">Annonce vocale météo</div><div class="set-hint">Lire la météo à voix haute</div></div>
+          <div class="set-ctrl"><div class="tog on" id="t-wx-voice" onclick="toggleSetting('t-wx-voice','wxVoice')"><div class="tog-dot"></div></div></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🔈</div>
+          <div class="set-info"><div class="set-name">Vitesse vocale</div><div class="set-hint">Vitesse de lecture de la météo</div></div>
+          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
+            <input type="range" class="set-range" id="s-voice-rate" min="5" max="15" value="9" oninput="updateVal('s-voice-rate','s-vr-val');saveSettings()">
+            <span class="set-val" id="s-vr-val">0.9x</span>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🧪</div>
+          <div class="set-info"><div class="set-name">Tester la voix</div><div class="set-hint">Aperçu de la synthèse vocale</div></div>
+          <div class="set-ctrl"><button class="test-btn" onclick="testVoice()">Tester</button></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="set-section">
+      <div class="set-title">🗣️ Annonces vocales des rappels</div>
+      <div class="set-group">
+        <div class="set-row">
+          <div class="set-ico">🔊</div>
+          <div class="set-info"><div class="set-name">Annonce vocale activée</div><div class="set-hint">L'appli lit les rappels à voix haute</div></div>
+          <div class="set-ctrl"><div class="tog on" id="t-remind-voice" onclick="toggleSetting('t-remind-voice','remindVoice')"><div class="tog-dot"></div></div></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🕐</div>
+          <div class="set-info"><div class="set-name">Heure de début</div><div class="set-hint">Pas d'annonce avant cette heure</div></div>
+          <div class="set-ctrl"><input type="time" class="set-time" id="s-voice-from" value="07:00" onchange="saveSettings()"></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🕙</div>
+          <div class="set-info"><div class="set-name">Heure de fin</div><div class="set-hint">Pas d'annonce après cette heure</div></div>
+          <div class="set-ctrl"><input type="time" class="set-time" id="s-voice-to" value="22:00" onchange="saveSettings()"></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🔈</div>
+          <div class="set-info"><div class="set-name">Vitesse d'annonce</div><div class="set-hint">Vitesse de lecture des rappels</div></div>
+          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
+            <input type="range" class="set-range" id="s-remind-rate" min="5" max="15" value="9" oninput="updateVal('s-remind-rate','s-rrate-val');saveSettings()">
+            <span class="set-val" id="s-rrate-val">0.9x</span>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">📢</div>
+          <div class="set-info"><div class="set-name">Urgent = voix plus forte</div><div class="set-hint">Augmente le volume pour les urgents</div></div>
+          <div class="set-ctrl"><div class="tog on" id="t-urgent-louder" onclick="toggleSetting('t-urgent-louder','urgentLouder')"><div class="tog-dot"></div></div></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🧪</div>
+          <div class="set-info"><div class="set-name">Tester l'annonce</div><div class="set-hint">Aperçu de la voix des rappels</div></div>
+          <div class="set-ctrl" style="display:flex;gap:6px">
+            <button class="test-btn" onclick="testRemindVoice('normal')">Normal</button>
+            <button class="test-btn" onclick="testRemindVoice('urgent')" style="background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.3);color:var(--cu)">Urgent</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="set-section">
+      <div class="set-title">🎨 Apparence</div>
+      <div class="set-group">
+        <div class="set-row">
+          <div class="set-ico">🌗</div>
+          <div class="set-info"><div class="set-name">Thème</div><div class="set-hint">Apparence de l'appli</div></div>
+          <div class="set-ctrl">
+            <select class="set-select" id="s-theme" onchange="applyTheme()">
+              <option value="auto">Automatique</option>
+              <option value="dark">Sombre</option>
+              <option value="light">Clair</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="set-section">
+      <div class="set-title">🤖 IA & Langue</div>
+      <div class="set-group">
+        <div class="set-row">
+          <div class="set-ico">🌍</div>
+          <div class="set-info"><div class="set-name">Langue de reconnaissance</div><div class="set-hint">Langue pour la dictée vocale</div></div>
+          <div class="set-ctrl">
+            <select class="set-select" id="s-lang" onchange="saveSettings()">
+              <option value="fr-FR">Français</option>
+              <option value="en-US">English</option>
+              <option value="es-ES">Español</option>
+              <option value="de-DE">Deutsch</option>
+            </select>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🧹</div>
+          <div class="set-info"><div class="set-name">Effacer tous les rappels</div><div class="set-hint">Supprimer tous les rappels en cours</div></div>
+          <div class="set-ctrl"><button class="test-btn" style="background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.3);color:var(--cu)" onclick="clearAll()">Effacer</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:20px"></div>
   </div>
 
-  <div class="alarm-wrap" id="alarm-wrap">
+  <!-- Voice overlay -->
+  <div class="voice-ov" id="voice-ov">
+    <div class="v-ring">🎙️</div>
+    <div class="v-hint">Je vous écoute...</div>
+    <div class="v-trans" id="v-trans"></div>
+    <button class="v-stop" onclick="stopVoice()">Arrêter</button>
+  </div>
+
+  <!-- Alarm overlay -->
+  <div class="alarm-ov" id="alarm-ov">
     <div class="alarm-box">
-      <div class="alarm-anim" id="alarm-anim">🔔</div>
+      <div class="alarm-ring" id="alarm-ring">🔔</div>
       <div class="alarm-badge" id="alarm-badge"></div>
       <div class="alarm-msg" id="alarm-msg"></div>
       <div class="alarm-time" id="alarm-time"></div>
@@ -161,90 +433,369 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--c-tex
 </div>
 
 <script>
-const WORKER = 'https://rappel-ia.joel-bevilacqua0667.workers.dev';
+const WORKER='https://rappel-ia.joel-bevilacqua0667.workers.dev';
 let reminders=[],audioCtx=null,alarmLoop=null,currentAlarm=null,swReg=null;
-let recognition=null,isListening=false;
+let recognition=null,isListening=false,wxCoords=null,wxVoiceOn=true;
 
+// Settings defaults
+let cfg={
+  soundNormal:'sine',soundUrgent:'square',
+  volume:5,repeatNormal:5,repeatUrgent:3,
+  vibration:true,vibNormal:'soft',vibUrgent:'sos',
+  wxTime:'07:30',wxVoice:true,voiceRate:0.9,
+  theme:'auto',lang:'fr-FR',
+  remindVoice:true,voiceFrom:'07:00',voiceTo:'22:00',remindRate:0.9,urgentLouder:true
+};
+
+function loadSettings(){
+  const s=localStorage.getItem('rappelia_cfg');
+  if(s)cfg={...cfg,...JSON.parse(s)};
+  document.getElementById('s-sound-normal').value=cfg.soundNormal;
+  document.getElementById('s-sound-urgent').value=cfg.soundUrgent;
+  document.getElementById('s-volume').value=cfg.volume;
+  document.getElementById('s-volume-val').textContent=cfg.volume;
+  document.getElementById('s-repeat-normal').value=cfg.repeatNormal;
+  document.getElementById('s-rn-val').textContent=cfg.repeatNormal+'s';
+  document.getElementById('s-repeat-urgent').value=cfg.repeatUrgent;
+  document.getElementById('s-ru-val').textContent=cfg.repeatUrgent+'s';
+  document.getElementById('s-vib-normal').value=cfg.vibNormal;
+  document.getElementById('s-vib-urgent').value=cfg.vibUrgent;
+  document.getElementById('s-wx-time').value=cfg.wxTime;
+  document.getElementById('s-voice-rate').value=Math.round(cfg.voiceRate*10);
+  document.getElementById('s-vr-val').textContent=cfg.voiceRate+'x';
+  document.getElementById('s-theme').value=cfg.theme;
+  document.getElementById('s-lang').value=cfg.lang;
+  if(!cfg.vibration)document.getElementById('t-vibration').classList.remove('on');
+  if(!cfg.wxVoice)document.getElementById('t-wx-voice').classList.remove('on');
+  wxVoiceOn=cfg.wxVoice;
+  // Vocal remind settings
+  if(document.getElementById('s-voice-from'))document.getElementById('s-voice-from').value=cfg.voiceFrom||'07:00';
+  if(document.getElementById('s-voice-to'))document.getElementById('s-voice-to').value=cfg.voiceTo||'22:00';
+  if(document.getElementById('s-remind-rate')){document.getElementById('s-remind-rate').value=Math.round((cfg.remindRate||0.9)*10);document.getElementById('s-rrate-val').textContent=(cfg.remindRate||0.9)+'x';}
+  if(!cfg.remindVoice&&document.getElementById('t-remind-voice'))document.getElementById('t-remind-voice').classList.remove('on');
+  if(!cfg.urgentLouder&&document.getElementById('t-urgent-louder'))document.getElementById('t-urgent-louder').classList.remove('on');
+  applyTheme();
+}
+
+function saveSettings(){
+  cfg.soundNormal=document.getElementById('s-sound-normal').value;
+  cfg.soundUrgent=document.getElementById('s-sound-urgent').value;
+  cfg.volume=parseInt(document.getElementById('s-volume').value);
+  cfg.repeatNormal=parseInt(document.getElementById('s-repeat-normal').value);
+  cfg.repeatUrgent=parseInt(document.getElementById('s-repeat-urgent').value);
+  cfg.vibNormal=document.getElementById('s-vib-normal').value;
+  cfg.vibUrgent=document.getElementById('s-vib-urgent').value;
+  cfg.wxTime=document.getElementById('s-wx-time').value;
+  cfg.voiceRate=parseFloat(document.getElementById('s-voice-rate').value)/10;
+  cfg.lang=document.getElementById('s-lang').value;
+  if(document.getElementById('s-voice-from'))cfg.voiceFrom=document.getElementById('s-voice-from').value;
+  if(document.getElementById('s-voice-to'))cfg.voiceTo=document.getElementById('s-voice-to').value;
+  if(document.getElementById('s-remind-rate'))cfg.remindRate=parseFloat(document.getElementById('s-remind-rate').value)/10;
+  localStorage.setItem('rappelia_cfg',JSON.stringify(cfg));
+}
+
+function toggleSetting(id,key){
+  const el=document.getElementById(id);
+  el.classList.toggle('on');
+  cfg[key]=el.classList.contains('on');
+  if(key==='wxVoice')wxVoiceOn=cfg.wxVoice;
+  saveSettings();
+}
+
+function updateVal(inputId,valId){
+  const v=document.getElementById(inputId).value;
+  const el=document.getElementById(valId);
+  if(valId==='s-vr-val')el.textContent=(parseFloat(v)/10).toFixed(1)+'x';
+  else if(valId.includes('val')&&inputId.includes('repeat'))el.textContent=v+'s';
+  else el.textContent=v;
+}
+
+function applyTheme(){
+  const t=document.getElementById('s-theme').value;
+  cfg.theme=t;
+  document.body.className=t==='dark'?'force-dark':t==='light'?'force-light':'';
+  saveSettings();
+}
+
+function clearAll(){
+  if(confirm('Effacer tous les rappels ?')){reminders=[];save();render();}
+}
+
+function togglePage(){
+  const main=document.getElementById('page-main');
+  const sett=document.getElementById('page-settings');
+  const btn=document.getElementById('settings-btn');
+  const sub=document.getElementById('hdr-sub');
+  if(main.classList.contains('active')){
+    main.classList.remove('active');sett.classList.add('active');
+    btn.textContent='✕';sub.textContent='Paramètres';
+  }else{
+    sett.classList.remove('active');main.classList.add('active');
+    btn.textContent='⚙️';sub.textContent='Rappels intelligents';
+  }
+}
+
+// Audio
 function audio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx}
-function playSound(imp){try{const ctx=audio();if(ctx.state==='suspended')ctx.resume();const p=imp==='urgent'?[{f:880,t:0,d:.11},{f:880,t:.17,d:.11},{f:880,t:.34,d:.11},{f:1100,t:.54,d:.24},{f:1100,t:.84,d:.24}]:[{f:523,t:0,d:.22},{f:659,t:.32,d:.20}];p.forEach(({f,t,d})=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.connect(g);g.connect(ctx.destination);osc.frequency.value=f;osc.type=imp==='urgent'?'square':'sine';const s=ctx.currentTime+t;g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(imp==='urgent'?.28:.18,s+.025);g.gain.linearRampToValueAtTime(0,s+d);osc.start(s);osc.stop(s+d+.06)})}catch(e){}}
+
+function playTone(freq,type,duration,vol,delay,ctx){
+  const osc=ctx.createOscillator(),g=ctx.createGain();
+  osc.connect(g);g.connect(ctx.destination);
+  osc.frequency.value=freq;osc.type=type;
+  const s=ctx.currentTime+delay;
+  g.gain.setValueAtTime(0,s);
+  g.gain.linearRampToValueAtTime(vol,s+0.025);
+  g.gain.linearRampToValueAtTime(0,s+duration);
+  osc.start(s);osc.stop(s+duration+0.06);
+}
+
+function playSound(imp){
+  try{
+    const ctx=audio();
+    if(ctx.state==='suspended')ctx.resume();
+    const vol=(cfg.volume/10)*0.35;
+    const type=imp==='urgent'?cfg.soundUrgent:cfg.soundNormal;
+    if(imp==='urgent'){
+      playTone(880,type,.11,vol,0,ctx);
+      playTone(880,type,.11,vol,.17,ctx);
+      playTone(880,type,.11,vol,.34,ctx);
+      playTone(1100,type,.24,vol,.54,ctx);
+      playTone(1100,type,.24,vol,.84,ctx);
+    }else{
+      playTone(523,type,.22,vol,0,ctx);
+      playTone(659,type,.20,vol,.32,ctx);
+    }
+    if(cfg.vibration&&navigator.vibrate){
+      const patterns={
+        soft:[200],medium:[300,100,300],strong:[500,100,500],
+        sos:[100,50,100,50,100,200,300,50,300,50,300,200,100,50,100,50,100],
+        rapid:[100,50,100,50,100,50,100,50],
+      };
+      const p=imp==='urgent'?patterns[cfg.vibUrgent]:patterns[cfg.vibNormal];
+      navigator.vibrate(p||[300]);
+    }
+  }catch(e){}
+}
+
+function testSound(imp){playSound(imp)}
+
+// Voice TTS
+function speakText(text){
+  if(!wxVoiceOn||!window.speechSynthesis)return;
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=cfg.lang;u.rate=cfg.voiceRate;u.pitch=1;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+function testVoice(){speakText('Bonjour ! Voici un test de la synthèse vocale de RappelIA. La météo du jour est ensoleillée et il fait 22 degrés.')}
+
+// Clock
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}
+
+// Helpers
 function fmt(dt){const d=new Date(dt),n=new Date(),tm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});return d.toDateString()===n.toDateString()?`Aujourd'hui à ${tm}`:d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+` à ${tm}`}
 function cd(dt){const ms=new Date(dt)-new Date();if(ms<=0)return'Maintenant';const m=Math.floor(ms/60000),h=Math.floor(m/60),rm=m%60;if(h>0)return`dans ${h}h${rm>0?rm+'min':''}`;if(m>0)return`dans ${m} min`;return'dans < 1 min'}
 function uid(){return`r_${Date.now()}_${Math.random().toString(36).slice(2)}`}
 function save(){localStorage.setItem('rappel_ia_v3',JSON.stringify(reminders))}
-function load(){try{const raw=localStorage.getItem('rappel_ia_v3');if(raw){const now=new Date();reminders=JSON.parse(raw).filter(r=>new Date(r.datetime)>now)}}catch(e){reminders=[]}render()}
+function load(){try{const r=localStorage.getItem('rappel_ia_v3');if(r){const now=new Date();reminders=JSON.parse(r).filter(x=>new Date(x.datetime)>now)}}catch(e){reminders=[]}render()}
 
+// SW
 async function registerSW(){
   if(!('serviceWorker'in navigator))return;
   if(location.hostname==='www.claudeusercontent.com'||location.hostname==='claudeusercontent.com')return;
-  try{
-    swReg=await navigator.serviceWorker.register('./sw.js');
-    document.getElementById('sw-ok').style.display='flex';
-    navigator.serviceWorker.addEventListener('message',e=>{if(e.data.type==='FIRED'){reminders=reminders.filter(r=>r.id!==e.data.id);save();render()}});
-    swMsg({type:'PING'});
-  }catch(e){console.warn('SW:',e)}
+  try{swReg=await navigator.serviceWorker.register('./sw.js');document.getElementById('sw-ok').style.display='flex';navigator.serviceWorker.addEventListener('message',e=>{if(e.data.type==='FIRED'){reminders=reminders.filter(r=>r.id!==e.data.id);save();render()}});swMsg({type:'PING'})}catch(e){console.warn('SW:',e)}
 }
-function swMsg(msg){if(swReg&&swReg.active){swReg.active.postMessage(msg);return}if(navigator.serviceWorker)navigator.serviceWorker.ready.then(reg=>reg.active&&reg.active.postMessage(msg))}
+function swMsg(msg){if(swReg&&swReg.active){swReg.active.postMessage(msg);return}if(navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.active&&r.active.postMessage(msg))}
 
-function render(){const now=new Date(),upcoming=reminders.filter(r=>new Date(r.datetime)>now).sort((a,b)=>new Date(a.datetime)-new Date(b.datetime)),list=document.getElementById('list'),empty=document.getElementById('empty'),lbl=document.getElementById('sec-lbl');if(!upcoming.length){list.innerHTML='';empty.style.display='block';lbl.style.display='none';return}empty.style.display='none';lbl.style.display='block';list.innerHTML=upcoming.map(r=>`<div class="r-card"><div class="r-icon ${r.importance}">${r.importance==='urgent'?'🚨':'🔔'}</div><div class="r-body"><div class="r-msg">${r.message}</div><div class="r-meta"><span class="r-badge ${r.importance}">${r.importance==='urgent'?'URGENT':'NORMAL'}</span><span id="cd-${r.id}">${cd(r.datetime)}</span> · ${fmt(r.datetime)}</div></div><button class="r-del" onclick="delR('${r.id}')">✕</button></div>`).join('')}
+// Render
+function render(){
+  const now=new Date(),up=reminders.filter(r=>new Date(r.datetime)>now).sort((a,b)=>new Date(a.datetime)-new Date(b.datetime));
+  const list=document.getElementById('list'),empty=document.getElementById('empty'),lbl=document.getElementById('sec-lbl');
+  if(!up.length){list.innerHTML='';empty.style.display='block';lbl.style.display='none';return}
+  empty.style.display='none';lbl.style.display='block';
+  list.innerHTML=up.map(r=>`<div class="r-card"><div class="r-ico ${r.importance}">${r.importance==='urgent'?'🚨':'🔔'}</div><div class="r-body"><div class="r-msg">${r.message}</div><div class="r-meta"><span class="r-badge ${r.importance}">${r.importance==='urgent'?'URGENT':'NORMAL'}</span><span id="cd-${r.id}">${cd(r.datetime)}</span> · ${fmt(r.datetime)}</div></div><button class="r-del" onclick="delR('${r.id}')">✕</button></div>`).join('');
+}
 function delR(id){reminders=reminders.filter(r=>r.id!==id);save();swMsg({type:'DELETE',id});render()}
 
-function checkLoop(){if(!currentAlarm){const now=new Date(),due=reminders.find(r=>new Date(r.datetime)<=now);if(due)showAlarm(due)}reminders.forEach(r=>{const el=document.getElementById(`cd-${r.id}`);if(el)el.textContent=cd(r.datetime)})}
-function showAlarm(r){currentAlarm=r;reminders=reminders.filter(x=>x.id!==r.id);save();document.getElementById('alarm-anim').className=`alarm-anim ${r.importance}`;document.getElementById('alarm-anim').textContent=r.importance==='urgent'?'🚨':'🔔';document.getElementById('alarm-badge').className=`alarm-badge ${r.importance}`;document.getElementById('alarm-badge').textContent=r.importance==='urgent'?'URGENT':'RAPPEL';document.getElementById('alarm-msg').textContent=r.message;document.getElementById('alarm-time').textContent=fmt(r.datetime);document.getElementById('alarm-ok').className=`alarm-ok ${r.importance}`;document.getElementById('alarm-wrap').classList.add('on');playSound(r.importance);alarmLoop=setInterval(()=>playSound(r.importance),r.importance==='urgent'?3000:5500)}
-function dismiss(){clearInterval(alarmLoop);currentAlarm=null;document.getElementById('alarm-wrap').classList.remove('on');render()}
+// Check
+function checkLoop(){
+  if(!currentAlarm){const now=new Date(),due=reminders.find(r=>new Date(r.datetime)<=now);if(due)showAlarm(due)}
+  reminders.forEach(r=>{const el=document.getElementById(`cd-${r.id}`);if(el)el.textContent=cd(r.datetime)});
+  checkWxReminder();
+}
 
+function showAlarm(r){
+  currentAlarm=r;reminders=reminders.filter(x=>x.id!==r.id);save();
+  document.getElementById('alarm-ring').className=`alarm-ring ${r.importance}`;
+  document.getElementById('alarm-ring').textContent=r.importance==='urgent'?'🚨':'🔔';
+  document.getElementById('alarm-badge').className=`alarm-badge ${r.importance}`;
+  document.getElementById('alarm-badge').textContent=r.importance==='urgent'?'URGENT':'RAPPEL';
+  document.getElementById('alarm-msg').textContent=r.message;
+  document.getElementById('alarm-time').textContent=fmt(r.datetime);
+  document.getElementById('alarm-ok').className=`alarm-ok ${r.importance}`;
+  document.getElementById('alarm-ov').classList.add('on');
+  playSound(r.importance);
+  const interval=(r.importance==='urgent'?cfg.repeatUrgent:cfg.repeatNormal)*1000;
+  alarmLoop=setInterval(()=>playSound(r.importance),interval);
+  setTimeout(()=>speakReminder(r.message,r.importance),800);
+}
+function dismiss(){clearInterval(alarmLoop);currentAlarm=null;document.getElementById('alarm-ov').classList.remove('on');render()}
+
+// Notif
 async function reqNotif(){const p=await Notification.requestPermission();if(p==='granted')document.getElementById('perm-banner').style.display='none'}
+
+// Input
 function setIn(txt){document.getElementById('ai-input').value=txt;document.getElementById('ai-input').focus()}
 
-function initRecognition(){
+// Voice STT
+function initRec(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){alert("Reconnaissance vocale non supportée.\nUtilise Chrome sur Android.");return null}
-  const r=new SR();
-  r.lang='fr-FR';r.continuous=false;r.interimResults=true;
-  r.onstart=()=>{isListening=true;document.getElementById('voice-overlay').classList.add('on');document.getElementById('mic-btn').classList.add('listening');document.getElementById('mic-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg> Écoute...';document.getElementById('voice-transcript').textContent=''};
-  r.onresult=e=>{let interim='',final='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript}document.getElementById('voice-transcript').textContent=final||interim;if(final){document.getElementById('ai-input').value=final;stopVoice();setTimeout(()=>sendAI(),400)}};
-  r.onerror=e=>{console.warn('Voice:',e.error);stopVoice();if(e.error==='not-allowed')document.getElementById('ai-status').textContent='⚠ Microphone refusé — autorisez-le dans Chrome'};
+  if(!SR){alert("Reconnaissance vocale non supportée.");return null}
+  const r=new SR();r.lang=cfg.lang;r.continuous=false;r.interimResults=true;
+  r.onstart=()=>{isListening=true;document.getElementById('voice-ov').classList.add('on');document.getElementById('mic-btn').classList.add('listening');document.getElementById('mic-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg> Écoute...';document.getElementById('v-trans').textContent=''};
+  r.onresult=e=>{let interim='',final='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript}document.getElementById('v-trans').textContent=final||interim;if(final){document.getElementById('ai-input').value=final;stopVoice();setTimeout(()=>sendAI(),400)}};
+  r.onerror=e=>{stopVoice();if(e.error==='not-allowed')document.getElementById('ai-status').textContent='⚠ Microphone refusé'};
   r.onend=()=>{if(isListening)stopVoice()};
   return r;
 }
-function toggleVoice(){if(isListening){stopVoice();return}if(!recognition)recognition=initRecognition();if(!recognition)return;try{recognition.start()}catch(e){recognition=null}}
-function stopVoice(){isListening=false;document.getElementById('voice-overlay').classList.remove('on');document.getElementById('mic-btn').classList.remove('listening');document.getElementById('mic-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Parler';try{if(recognition)recognition.stop()}catch(e){}}
+function toggleVoice(){if(isListening){stopVoice();return}if(!recognition)recognition=initRec();if(!recognition)return;try{recognition.start()}catch(e){recognition=null}}
+function stopVoice(){isListening=false;document.getElementById('voice-ov').classList.remove('on');document.getElementById('mic-btn').classList.remove('listening');document.getElementById('mic-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Parler';try{if(recognition)recognition.stop()}catch(e){}}
 
+// AI
 async function sendAI(){
-  const input=document.getElementById('ai-input').value.trim();
-  if(!input)return;
-  const btn=document.getElementById('ai-btn'),status=document.getElementById('ai-status');
-  btn.disabled=true;
-  status.innerHTML='Analyse en cours <span class="dots"><span>.</span><span>.</span><span>.</span></span>';
+  const input=document.getElementById('ai-input').value.trim();if(!input)return;
+  const btn=document.getElementById('send-btn'),status=document.getElementById('ai-status');
+  btn.disabled=true;status.innerHTML='Analyse en cours <span class="dots"><span>.</span><span>.</span><span>.</span></span>';
   const nowStr=new Date().toLocaleString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
   try{
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[
-      {role:'system',content:`Tu analyses des demandes de rappels en français et retournes UNIQUEMENT du JSON valide, sans backticks ni commentaires.\nDate et heure actuelles : ${nowStr}\nFormat JSON :\n{"reminders":[{"message":"texte court (max 50 chars)","datetime":"2025-01-15T14:30:00","importance":"normal"}],"summary":"phrase résumant ce qui a été créé"}\nRègles :\n- Calcule les heures exactes depuis maintenant\n- importance = "urgent" si urgent/important/critique mentionné, sinon "normal"\n- Pour rappels répétés crée un rappel par occurrence (max 12)\n- datetime ISO 8601 local sans timezone\n- Messages clairs et concis`},
+      {role:'system',content:`Tu analyses des demandes de rappels en français et retournes UNIQUEMENT du JSON valide.\nDate : ${nowStr}\nFormat: {"reminders":[{"message":"texte (max 50 chars)","datetime":"2025-01-15T14:30:00","importance":"normal"}],"summary":"résumé"}\nRègles: calcule heures exactes, importance=urgent si mentionné, max 12 rappels répétés, datetime ISO local.`},
       {role:'user',content:input}
     ]})});
     const data=await res.json();
     const raw=data.choices?.[0]?.message?.content||'';
-    let parsed;
-    try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim())}catch(e){throw new Error('Réponse IA invalide')}
+    let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim())}catch(e){throw new Error('Réponse IA invalide')}
     const now=new Date();
     const added=(parsed.reminders||[]).map(r=>({...r,id:uid()})).filter(r=>new Date(r.datetime)>now);
     if(!added.length)throw new Error('Aucune heure future dans la demande');
-    reminders=[...reminders,...added];
-    save();
+    reminders=[...reminders,...added];save();
     added.forEach(r=>swMsg({type:'ADD',reminder:r}));
     status.textContent=parsed.summary||`${added.length} rappel(s) créé(s)`;
-    document.getElementById('ai-input').value='';
-    render();
+    document.getElementById('ai-input').value='';render();
     setTimeout(()=>{status.textContent=''},5000);
   }catch(e){
-    status.style.color='var(--c-urgent)';
-    status.textContent='⚠ '+(e.message||'Erreur réseau');
+    status.style.color='var(--cu)';status.textContent='⚠ '+(e.message||'Erreur');
     setTimeout(()=>{status.textContent='';status.style.color=''},4000);
   }
   btn.disabled=false;
 }
 
-tick();setInterval(tick,1000);setInterval(checkLoop,10000);load();registerSW();
+
+// Vocal reminder announcement
+function isVoiceTimeActive(){
+  if(!cfg.remindVoice)return false;
+  const now=new Date();
+  const cur=now.getHours()*60+now.getMinutes();
+  const[fh,fm]=(cfg.voiceFrom||'07:00').split(':').map(Number);
+  const[th,tm]=(cfg.voiceTo||'22:00').split(':').map(Number);
+  const from=fh*60+fm, to=th*60+tm;
+  return cur>=from&&cur<=to;
+}
+
+function speakReminder(message, importance){
+  if(!isVoiceTimeActive())return;
+  if(!window.speechSynthesis)return;
+  const rate=cfg.remindRate||0.9;
+  const isUrgent=importance==='urgent';
+  const prefix=isUrgent?'Rappel URGENT ! ':'Rappel : ';
+  const u=new SpeechSynthesisUtterance(prefix+message);
+  u.lang=cfg.lang||'fr-FR';
+  u.rate=isUrgent&&cfg.urgentLouder?Math.max(0.8,rate-0.1):rate;
+  u.pitch=isUrgent?1.2:1;
+  u.volume=isUrgent&&cfg.urgentLouder?1:0.85;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+function testRemindVoice(imp){
+  const msg=imp==='urgent'?'Rappel urgent ! Vérifier vos positions de trading maintenant.':'Rappel : Pensez à boire de l'eau.';
+  // Temporarily enable for test
+  const wasOff=!cfg.remindVoice;
+  cfg.remindVoice=true;
+  speakReminder(imp==='urgent'?'Vérifier vos positions de trading maintenant.':'Pensez à boire de l'eau.',imp);
+  if(wasOff)cfg.remindVoice=false;
+}
+
+// Weather
+const WX_CODES={0:'☀️ Ciel dégagé',1:'🌤️ Peu nuageux',2:'⛅ Partiellement nuageux',3:'☁️ Couvert',45:'🌫️ Brouillard',51:'🌦️ Bruine légère',61:'🌧️ Pluie légère',63:'🌧️ Pluie',65:'🌧️ Pluie forte',71:'🌨️ Neige légère',80:'🌦️ Averses',95:'⛈️ Orage'};
+
+function getWxAdvice(code,temp){
+  if([61,63,65,51,80,81,82].includes(code))return'Pense à prendre ton parapluie !';
+  if([71,73,75].includes(code))return'Il neige, couvre-toi bien !';
+  if([95,96,99].includes(code))return'Orage prévu, évite les sorties !';
+  if([45,48].includes(code))return'Brouillard, sois prudent en voiture.';
+  if(temp>=30)return'Forte chaleur, hydrate-toi et mets de la crème !';
+  if(temp<=5)return'Il fait froid, couvre-toi bien !';
+  return'Belle journée, profites-en !';
+}
+
+async function fetchWeather(){
+  if(!wxCoords)return;
+  try{
+    const {lat,lon}=wxCoords;
+    const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode&timezone=auto`);
+    const data=await res.json();
+    const temp=Math.round(data.current.temperature_2m);
+    const code=data.current.weathercode;
+    const desc=WX_CODES[code]||'🌤️ Variable';
+    document.getElementById('wx-icon').textContent=desc.split(' ')[0];
+    document.getElementById('wx-temp').textContent=temp+'°C';
+    document.getElementById('wx-desc').textContent=desc.split(' ').slice(1).join(' ');
+    localStorage.setItem('wx_cache',JSON.stringify({temp,code,desc,ts:Date.now()}));
+    return{temp,code,desc};
+  }catch(e){document.getElementById('wx-desc').textContent='Météo indisponible'}
+}
+
+function getLocation(){
+  if(!navigator.geolocation)return;
+  document.getElementById('wx-desc').textContent='Localisation...';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    wxCoords={lat:pos.coords.latitude,lon:pos.coords.longitude};
+    localStorage.setItem('wx_coords',JSON.stringify(wxCoords));
+    const btn=document.getElementById('wx-loc-btn');
+    if(btn)btn.style.display='none';
+    fetchWeather();
+  },()=>{
+    const s=localStorage.getItem('wx_coords');
+    if(s){wxCoords=JSON.parse(s);fetchWeather();}
+    else document.getElementById('wx-desc').textContent='Localisation refusée';
+  });
+}
+
+async function checkWxReminder(){
+  const now=new Date();
+  const[h,m]=cfg.wxTime.split(':').map(Number);
+  const lastFired=localStorage.getItem('wx_last_fired');
+  const today=now.toDateString();
+  if(now.getHours()===h&&now.getMinutes()===m&&lastFired!==today){
+    localStorage.setItem('wx_last_fired',today);
+    const wx=await fetchWeather();
+    if(wx){
+      const advice=getWxAdvice(wx.code,wx.temp);
+      document.getElementById('wx-status').textContent=advice;
+      if(wxVoiceOn)speakText(`Météo du jour : ${wx.temp} degrés. ${advice}`);
+      const r={id:uid(),message:advice.substring(0,50),datetime:new Date(now.getTime()+2000).toISOString().slice(0,19),importance:'normal'};
+      reminders.push(r);save();swMsg({type:'ADD',reminder:r});render();
+    }
+  }
+}
+
+// Boot
+tick();setInterval(tick,1000);setInterval(checkLoop,60000);checkLoop();load();registerSW();loadSettings();
+const wxC=localStorage.getItem('wx_coords');if(wxC)wxCoords=JSON.parse(wxC);
+const wxCache=localStorage.getItem('wx_cache');
+if(wxCache){const{temp,desc,ts}=JSON.parse(wxCache);if(Date.now()-ts<3600000){document.getElementById('wx-icon').textContent=desc.split(' ')[0];document.getElementById('wx-temp').textContent=temp+'°C';document.getElementById('wx-desc').textContent=desc.split(' ').slice(1).join(' ');}}
+getLocation();
 if('Notification'in window&&Notification.permission==='default')document.getElementById('perm-banner').style.display='flex';
 document.getElementById('ai-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI()}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){load();swMsg({type:'PING'})}});
