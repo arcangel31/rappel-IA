@@ -47,18 +47,29 @@ async function fire(r) {
   const urgent = r.importance === 'urgent';
 
   await self.registration.showNotification(
-    urgent ? `\uD83D\uDEA8 URGENT : ${r.message}` : `\uD83D\uDD14 ${r.message}`,
+    urgent ? '\uD83D\uDEA8 URGENT : ' + r.message : '\uD83D\uDD14 Rappel : ' + r.message,
     {
       body: urgent
-        ? 'Rappel urgent \u2014 Touchez pour ouvrir RappelIA'
-        : 'Touchez pour ouvrir RappelIA',
+        ? 'Appuyez pour ouvrir \u2014 Priorité maximale'
+        : 'Appuyez pour ouvrir RappelIA',
       vibrate: urgent
-        ? [300, 100, 300, 100, 300, 100, 600]
+        ? [300, 100, 300, 100, 300, 100, 600, 200, 600]
         : [300, 100, 300],
       requireInteraction: true,
       renotify: true,
+      silent: false,
       tag: r.id,
-      data: { id: r.id, scope: self.registration.scope }
+      // Priority max pour Android
+      urgency: urgent ? 'high' : 'normal',
+      actions: [
+        { action: 'open', title: 'Ouvrir' },
+        { action: 'dismiss', title: 'OK' }
+      ],
+      data: {
+        id: r.id,
+        importance: r.importance,
+        scope: self.registration.scope
+      }
     }
   );
 
@@ -69,10 +80,7 @@ async function fire(r) {
 function schedule(r) {
   if (timers.has(r.id)) return;
   const delay = new Date(r.datetime).getTime() - Date.now();
-  if (delay <= 0) {
-    fire(r);
-    return;
-  }
+  if (delay <= 0) { fire(r); return; }
   const t = setTimeout(() => fire(r), delay);
   timers.set(r.id, t);
 }
@@ -106,10 +114,16 @@ self.addEventListener('message', async e => {
 
 self.addEventListener('notificationclick', e => {
   e.notification.close();
+  if (e.action === 'dismiss') return;
   e.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
       const alive = cs.find(c => c.visibilityState === 'visible') || cs[0];
       return alive ? alive.focus() : self.clients.openWindow(e.notification.data?.scope || '/');
     })
   );
+});
+
+// Garder le SW actif avec un heartbeat
+self.addEventListener('periodicsync', e => {
+  if (e.tag === 'rappel-check') e.waitUntil(rescheduleAll());
 });
