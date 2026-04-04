@@ -722,7 +722,7 @@ function testRemindVoice(imp){
   // Temporarily enable for test
   const wasOff=!cfg.remindVoice;
   cfg.remindVoice=true;
-  speakReminder(imp==='urgent'?'Vérifier vos positions de trading maintenant.':'Pensez à boire de l'eau.',imp);
+  speakReminder(imp==='urgent'?'Vérifier vos positions de trading maintenant.':'Pensez à boire de l\u0027eau.',imp);
   if(wasOff)cfg.remindVoice=false;
 }
 
