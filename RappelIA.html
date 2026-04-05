@@ -652,7 +652,51 @@ function load(){try{const r=localStorage.getItem('rappel_ia_v3');if(r){const now
 async function registerSW(){
   if(!('serviceWorker'in navigator))return;
   if(location.hostname==='www.claudeusercontent.com'||location.hostname==='claudeusercontent.com')return;
-  try{swReg=await navigator.serviceWorker.register('./sw.js');document.getElementById('sw-ok').style.display='flex';navigator.serviceWorker.addEventListener('message',e=>{if(e.data.type==='FIRED'){reminders=reminders.filter(r=>r.id!==e.data.id);save();render()}});swMsg({type:'PING'})}catch(e){console.warn('SW:',e)}
+  try{
+    swReg=await navigator.serviceWorker.register('./sw.js');
+    document.getElementById('sw-ok').style.display='flex';
+    navigator.serviceWorker.addEventListener('message',e=>{
+      if(e.data.type==='FIRED'){reminders=reminders.filter(r=>r.id!==e.data.id);save();render()}
+    });
+    swMsg({type:'PING'});
+    // Init Firebase FCM
+    await initFCM();
+  }catch(e){console.warn('SW:',e)}
+}
+
+async function initFCM(){
+  try{
+    const {initializeApp}=await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    const {getMessaging,getToken,onMessage}=await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
+    const app=initializeApp({
+      apiKey:'AIzaSyBtIlQ68KhAljcU6IpgjHFpItmSnw3QoYs',
+      authDomain:'rappel-ia.firebaseapp.com',
+      projectId:'rappel-ia',
+      storageBucket:'rappel-ia.firebasestorage.app',
+      messagingSenderId:'842192744071',
+      appId:'1:842192744071:web:e6b1962d3b4aa71af01222'
+    });
+    const messaging=getMessaging(app);
+    const token=await getToken(messaging,{
+      vapidKey:'BCDHuuse1ZGOBVMuRJ6QL_mU3pkiJwGLgxF476I9KceHH1JxTRdbgD0qtNvcOKd_pqaQ7yY_AIVsgFXbFeLytig',
+      serviceWorkerRegistration:swReg
+    });
+    if(token){
+      localStorage.setItem('fcm_token',token);
+      // Send token to Cloudflare Worker
+      await fetch('https://rappel-ia.joel-bevilacqua0667.workers.dev/register',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({token})
+      }).catch(()=>{});
+    }
+    onMessage(messaging,payload=>{
+      const{title,body}=payload.data||{};
+      if(Notification.permission==='granted'){
+        new Notification(title||'RappelIA',{body:body||'',icon:'./icon-192.png',requireInteraction:true});
+      }
+    });
+  }catch(e){console.warn('FCM:',e)}
 }
 function swMsg(msg){if(swReg&&swReg.active){swReg.active.postMessage(msg);return}if(navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.active&&r.active.postMessage(msg))}
 

@@ -1,3 +1,39 @@
+importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
+
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBtIlQ68KhAljcU6IpgjHFpItmSnw3QoYs",
+  authDomain: "rappel-ia.firebaseapp.com",
+  projectId: "rappel-ia",
+  storageBucket: "rappel-ia.firebasestorage.app",
+  messagingSenderId: "842192744071",
+  appId: "1:842192744071:web:e6b1962d3b4aa71af01222"
+};
+
+firebase.initializeApp(FIREBASE_CONFIG);
+const messaging = firebase.messaging();
+
+// Handle background FCM messages
+messaging.onBackgroundMessage(payload => {
+  const { title, body, importance } = payload.data || {};
+  const urgent = importance === 'urgent';
+  return self.registration.showNotification(title || 'RappelIA', {
+    body: body || '',
+    icon: '/rappel-IA/icon-192.png',
+    badge: '/rappel-IA/icon-192.png',
+    vibrate: urgent ? [300,100,300,100,300,100,600] : [300,100,300],
+    requireInteraction: true,
+    renotify: true,
+    tag: 'rappel-' + Date.now(),
+    actions: [
+      { action: 'open', title: '🔔 Ouvrir' },
+      { action: 'dismiss', title: 'OK' }
+    ],
+    data: { scope: self.registration.scope, importance }
+  });
+});
+
+// Local DB for reminders (fallback si FCM indispo)
 const DB_NAME = 'rappel_ia';
 const STORE = 'reminders';
 const timers = new Map();
@@ -10,7 +46,6 @@ function openDB() {
     r.onerror = rej;
   });
 }
-
 async function getAll() {
   const db = await openDB();
   return new Promise((res, rej) => {
@@ -19,24 +54,20 @@ async function getAll() {
     r.onerror = rej;
   });
 }
-
 async function putOne(reminder) {
   const db = await openDB();
   return new Promise((res, rej) => {
     const tx = db.transaction(STORE, 'readwrite');
     tx.objectStore(STORE).put(reminder);
-    tx.oncomplete = res;
-    tx.onerror = rej;
+    tx.oncomplete = res; tx.onerror = rej;
   });
 }
-
 async function deleteOne(id) {
   const db = await openDB();
   return new Promise((res, rej) => {
     const tx = db.transaction(STORE, 'readwrite');
     tx.objectStore(STORE).delete(id);
-    tx.oncomplete = res;
-    tx.onerror = rej;
+    tx.oncomplete = res; tx.onerror = rej;
   });
 }
 
@@ -44,29 +75,24 @@ async function fire(r) {
   await deleteOne(r.id);
   timers.delete(r.id);
   const urgent = r.importance === 'urgent';
-
   await self.registration.showNotification(
-    urgent ? '\uD83D\uDEA8 URGENT : ' + r.message : '\uD83D\uDD14 Rappel : ' + r.message,
+    urgent ? '🚨 URGENT : ' + r.message : '🔔 Rappel : ' + r.message,
     {
-      body: urgent ? '\u26A0\uFE0F Priorité maximale \u2014 Appuyez pour ouvrir' : 'Appuyez pour ouvrir RappelIA',
+      body: urgent ? '⚠️ Priorité maximale — Appuyez pour ouvrir' : 'Appuyez pour ouvrir RappelIA',
+      icon: '/rappel-IA/icon-192.png',
+      badge: '/rappel-IA/icon-192.png',
       vibrate: urgent ? [300,100,300,100,300,100,600,200,600] : [300,100,300],
       requireInteraction: true,
       renotify: true,
       silent: false,
-      tag: urgent ? 'urgent-' + r.id : 'normal-' + r.id,
-      timestamp: Date.now(),
+      tag: 'rappel-' + r.id,
       actions: [
-        { action: 'open', title: '\u{1F514} Ouvrir' },
+        { action: 'open', title: '🔔 Ouvrir' },
         { action: 'dismiss', title: 'OK' }
       ],
-      data: { id: r.id, importance: r.importance, scope: self.registration.scope },
-      // Force heads-up on Android
-      badge: self.registration.scope + 'icon-192.png',
-      icon: self.registration.scope + 'icon-192.png',
-      image: undefined
+      data: { id: r.id, importance: r.importance, scope: self.registration.scope }
     }
   );
-
   const clients = await self.clients.matchAll({ type: 'window' });
   clients.forEach(c => c.postMessage({ type: 'FIRED', id: r.id }));
 }
@@ -75,8 +101,7 @@ function schedule(r) {
   if (timers.has(r.id)) return;
   const delay = new Date(r.datetime).getTime() - Date.now();
   if (delay <= 0) { fire(r); return; }
-  const t = setTimeout(() => fire(r), delay);
-  timers.set(r.id, t);
+  timers.set(r.id, setTimeout(() => fire(r), delay));
 }
 
 async function rescheduleAll() {
@@ -87,8 +112,7 @@ async function rescheduleAll() {
   }
   for (const r of all) {
     const delay = new Date(r.datetime).getTime() - Date.now();
-    if (delay <= 0) fire(r);
-    else schedule(r);
+    if (delay <= 0) fire(r); else schedule(r);
   }
 }
 
@@ -112,11 +136,7 @@ self.addEventListener('notificationclick', e => {
   e.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
       const alive = cs.find(c => c.visibilityState === 'visible') || cs[0];
-      return alive ? alive.focus() : self.clients.openWindow(e.notification.data?.scope || '/');
+      return alive ? alive.focus() : self.clients.openWindow(e.notification.data?.scope || '/rappel-IA/RappelIA.html');
     })
   );
-});
-
-self.addEventListener('periodicsync', e => {
-  if (e.tag === 'rappel-check') e.waitUntil(rescheduleAll());
 });
