@@ -369,6 +369,55 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
       </div>
     </div>
 
+
+    <div class="set-section">
+      <div class="set-title">📲 Notifications système</div>
+      <div class="set-group">
+        <div class="set-row">
+          <div class="set-ico">🔔</div>
+          <div class="set-info">
+            <div class="set-name">Notifications par-dessus les applis</div>
+            <div class="set-hint">Apparaît même si une autre appli est ouverte</div>
+          </div>
+          <div class="set-ctrl"><button class="test-btn" onclick="openAndroidNotifSettings()">Régler</button></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">🔒</div>
+          <div class="set-info">
+            <div class="set-name">Sur l'écran de verrouillage</div>
+            <div class="set-hint">Afficher les rappels sur l'écran verrouillé</div>
+          </div>
+          <div class="set-ctrl"><button class="test-btn" onclick="openAndroidNotifSettings()">Régler</button></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">⚡</div>
+          <div class="set-info">
+            <div class="set-name">Importance maximale</div>
+            <div class="set-hint">Pour notifications urgentes prioritaires</div>
+          </div>
+          <div class="set-ctrl"><button class="test-btn" onclick="openAndroidNotifSettings()">Régler</button></div>
+        </div>
+        <div class="set-row">
+          <div class="set-ico">📋</div>
+          <div class="set-info">
+            <div class="set-name">Guide pas à pas</div>
+            <div class="set-hint">Comment activer sur Honor MagicOS</div>
+          </div>
+          <div class="set-ctrl"><button class="test-btn" onclick="showNotifGuide()">Voir</button></div>
+        </div>
+      </div>
+      <div id="notif-guide" style="display:none;background:var(--bg3);border-radius:12px;padding:14px;margin-top:8px;font-size:12px;color:var(--mt);line-height:1.8">
+        <strong style="color:var(--tx);display:block;margin-bottom:6px">📱 Sur Honor MagicOS :</strong>
+        1. Paramètres → Applications → RappelIA<br>
+        2. → Notifications → Général<br>
+        3. Activer <strong style="color:var(--tx)">"Afficher les notifications"</strong><br>
+        4. Style → <strong style="color:var(--tx)">Bannières</strong> (pas Bandeaux)<br>
+        5. Activer <strong style="color:var(--tx)">"Sur écran verrouillé"</strong><br>
+        6. Activer <strong style="color:var(--tx)">"En dépit de Ne pas déranger"</strong><br>
+        7. Importance → <strong style="color:var(--tx)">Élevée ou Urgente</strong>
+      </div>
+    </div>
+
     <div class="set-section">
       <div class="set-title">🎨 Apparence</div>
       <div class="set-group">
@@ -788,6 +837,24 @@ async function checkWxReminder(){
       reminders.push(r);save();swMsg({type:'ADD',reminder:r});render();
     }
   }
+}
+
+
+// Android notification settings
+function openAndroidNotifSettings() {
+  // Try to open Android app notification settings
+  // This works when installed as PWA
+  const intentUrl = 'intent://settings/APP_NOTIFICATION_SETTINGS#Intent;scheme=android-app;package=com.android.settings;end';
+  try {
+    window.location.href = intentUrl;
+  } catch(e) {}
+  // Fallback: show guide
+  setTimeout(() => showNotifGuide(), 500);
+}
+
+function showNotifGuide() {
+  const g = document.getElementById('notif-guide');
+  if (g) g.style.display = g.style.display === 'none' ? 'block' : 'none';
 }
 
 // Boot

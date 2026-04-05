@@ -43,33 +43,27 @@ async function deleteOne(id) {
 async function fire(r) {
   await deleteOne(r.id);
   timers.delete(r.id);
-
   const urgent = r.importance === 'urgent';
 
   await self.registration.showNotification(
     urgent ? '\uD83D\uDEA8 URGENT : ' + r.message : '\uD83D\uDD14 Rappel : ' + r.message,
     {
-      body: urgent
-        ? 'Appuyez pour ouvrir \u2014 Priorité maximale'
-        : 'Appuyez pour ouvrir RappelIA',
-      vibrate: urgent
-        ? [300, 100, 300, 100, 300, 100, 600, 200, 600]
-        : [300, 100, 300],
+      body: urgent ? '\u26A0\uFE0F Priorité maximale \u2014 Appuyez pour ouvrir' : 'Appuyez pour ouvrir RappelIA',
+      vibrate: urgent ? [300,100,300,100,300,100,600,200,600] : [300,100,300],
       requireInteraction: true,
       renotify: true,
       silent: false,
-      tag: r.id,
-      // Priority max pour Android
-      urgency: urgent ? 'high' : 'normal',
+      tag: urgent ? 'urgent-' + r.id : 'normal-' + r.id,
+      timestamp: Date.now(),
       actions: [
-        { action: 'open', title: 'Ouvrir' },
+        { action: 'open', title: '\u{1F514} Ouvrir' },
         { action: 'dismiss', title: 'OK' }
       ],
-      data: {
-        id: r.id,
-        importance: r.importance,
-        scope: self.registration.scope
-      }
+      data: { id: r.id, importance: r.importance, scope: self.registration.scope },
+      // Force heads-up on Android
+      badge: self.registration.scope + 'icon-192.png',
+      icon: self.registration.scope + 'icon-192.png',
+      image: undefined
     }
   );
 
@@ -123,7 +117,6 @@ self.addEventListener('notificationclick', e => {
   );
 });
 
-// Garder le SW actif avec un heartbeat
 self.addEventListener('periodicsync', e => {
   if (e.tag === 'rappel-check') e.waitUntil(rescheduleAll());
 });
