@@ -2,7 +2,7 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBtIlQ68KhAljcU6IpgjHFpItmSnw3QoYs",
+  apiKey: "",
   authDomain: "rappel-ia.firebaseapp.com",
   projectId: "rappel-ia",
   storageBucket: "rappel-ia.firebasestorage.app",
