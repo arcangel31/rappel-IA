@@ -681,15 +681,7 @@ async function initFCM(){
       vapidKey:'BCDHuuse1ZGOBVMuRJ6QL_mU3pkiJwGLgxF476I9KceHH1JxTRdbgD0qtNvcOKd_pqaQ7yY_AIVsgFXbFeLytig',
       serviceWorkerRegistration:swReg
     });
-    if(token){
-      localStorage.setItem('fcm_token',token);
-      // Send token to Cloudflare Worker
-      await fetch('https://rappel-ia.joel-bevilacqua0667.workers.dev/register',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({token})
-      }).catch(()=>{});
-    }
+    if(token){ await registerFCMToken(token); }
     onMessage(messaging,payload=>{
       const{title,body}=payload.data||{};
       if(Notification.permission==='granted'){
@@ -708,7 +700,7 @@ function render(){
   empty.style.display='none';lbl.style.display='block';
   list.innerHTML=up.map(r=>`<div class="r-card"><div class="r-ico ${r.importance}">${r.importance==='urgent'?'🚨':'🔔'}</div><div class="r-body"><div class="r-msg">${r.message}</div><div class="r-meta"><span class="r-badge ${r.importance}">${r.importance==='urgent'?'URGENT':'NORMAL'}</span><span id="cd-${r.id}">${cd(r.datetime)}</span> · ${fmt(r.datetime)}</div></div><button class="r-del" onclick="delR('${r.id}')">✕</button></div>`).join('');
 }
-function delR(id){reminders=reminders.filter(r=>r.id!==id);save();swMsg({type:'DELETE',id});render()}
+function delR(id){reminders=reminders.filter(r=>r.id!==id);save();swMsg({type:'DELETE',id});syncToWorker();render()}
 
 // Check
 function checkLoop(){
@@ -773,6 +765,7 @@ async function sendAI(){
     if(!added.length)throw new Error('Aucune heure future dans la demande');
     reminders=[...reminders,...added];save();
     added.forEach(r=>swMsg({type:'ADD',reminder:r}));
+    syncToWorker();
     status.textContent=parsed.summary||`${added.length} rappel(s) créé(s)`;
     document.getElementById('ai-input').value='';render();
     setTimeout(()=>{status.textContent=''},5000);
@@ -899,6 +892,33 @@ function openAndroidNotifSettings() {
 function showNotifGuide() {
   const g = document.getElementById('notif-guide');
   if (g) g.style.display = g.style.display === 'none' ? 'block' : 'none';
+}
+
+
+// Sync reminders to Cloudflare Worker for FCM push
+async function syncToWorker(){
+  try{
+    const token=localStorage.getItem('fcm_token');
+    const body={reminders};
+    if(token)body.token=token;
+    await fetch(WORKER+'/sync',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+  }catch(e){console.warn('Sync:',e)}
+}
+
+// Save FCM token to worker when registered
+async function registerFCMToken(token){
+  try{
+    localStorage.setItem('fcm_token',token);
+    await fetch(WORKER+'/register',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token,reminders})
+    });
+  }catch(e){console.warn('FCM register:',e)}
 }
 
 // Boot
