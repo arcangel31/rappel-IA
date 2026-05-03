@@ -916,7 +916,7 @@ async function registerFCMToken(token){
     await fetch(WORKER+'/register',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({token,reminders})
+      body:JSON.stringify({token})
     });
   }catch(e){console.warn('FCM register:',e)}
 }
