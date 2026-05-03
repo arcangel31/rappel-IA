@@ -17,27 +17,19 @@ body.force-light{--bg:#F5F5FA;--bg2:#FFFFFF;--bg3:#EAEAF2;--bd:rgba(0,0,0,0.07);
 html,body{height:100%;overflow:hidden;background:var(--bg)}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
 .app{max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden}
-
-/* Header */
 .hdr{background:var(--bg2);border-bottom:0.5px solid var(--bd);padding:14px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .hdr-icon{width:38px;height:38px;border-radius:12px;background:rgba(74,158,255,0.1);border:0.5px solid rgba(74,158,255,0.25);display:flex;align-items:center;justify-content:center;font-size:20px}
 .hdr-title{font-size:16px;font-weight:600;letter-spacing:-0.3px}
 .hdr-sub{font-size:11px;color:var(--mt);margin-top:1px}
 .hdr-clock{margin-left:auto;font-size:14px;font-weight:500;color:var(--mt);font-variant-numeric:tabular-nums;letter-spacing:.5px}
 .hdr-settings{width:36px;height:36px;border-radius:10px;background:var(--bg3);border:0.5px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
-
-/* Pages */
 .page{flex:1;overflow-y:auto;padding-bottom:20px;display:none}
 .page.active{display:block}
 .page::-webkit-scrollbar{width:3px}
 .page::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
-
-/* Banners */
 .banner{margin:10px 12px 0;border-radius:12px;padding:10px 14px;font-size:12px;display:flex;align-items:center;gap:8px;cursor:pointer}
 .bwarn{background:rgba(255,140,0,0.1);border:0.5px solid rgba(255,140,0,0.3);color:#FF8C00}
 .bok{background:rgba(74,158,255,0.08);border:0.5px solid rgba(74,158,255,0.22);color:var(--cn);cursor:default}
-
-/* Weather */
 .wx-card{margin:10px 12px 0;background:var(--bg2);border-radius:16px;border:0.5px solid var(--bd);padding:14px}
 .wx-main{display:flex;align-items:center;gap:12px}
 .wx-icon{font-size:32px;flex-shrink:0}
@@ -45,8 +37,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
 .wx-temp{font-size:22px;font-weight:600}
 .wx-desc{font-size:12px;color:var(--mt);margin-top:2px}
 .wx-status{font-size:11px;color:var(--mt);margin-top:8px;font-style:italic;min-height:14px}
-
-/* AI Card */
 .ai-card{margin:12px;background:var(--bg2);border-radius:16px;border:0.5px solid var(--bd)}
 .ai-lbl{padding:12px 14px 0;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--mt)}
 .ai-ta{width:100%;border:none;background:transparent;color:var(--tx);font-size:14px;font-family:inherit;padding:10px 14px;resize:none;outline:none;line-height:1.55;min-height:72px}
@@ -63,8 +53,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
 .send-btn:disabled{opacity:.35;cursor:not-allowed}
 .send-btn:active:not(:disabled){transform:scale(.9)}
 .ai-status{padding:6px 14px 10px;font-size:12px;color:var(--mt);min-height:30px;font-style:italic}
-
-/* List */
 .sec-lbl{padding:4px 16px 6px;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--mt)}
 .list{margin:0 12px;display:flex;flex-direction:column;gap:8px}
 .r-card{background:var(--bg2);border-radius:14px;border:0.5px solid var(--bd);padding:13px 14px;display:flex;align-items:center;gap:12px;animation:slin .22s ease}
@@ -83,8 +71,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
 .empty{text-align:center;padding:52px 24px 24px;color:var(--ht)}
 .empty-icon{font-size:44px;margin-bottom:14px}
 .empty-text{font-size:14px;line-height:1.6}
-
-/* Settings Page */
 .set-section{margin:12px 12px 0}
 .set-title{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--mt);padding:0 4px 8px}
 .set-group{background:var(--bg2);border-radius:16px;border:0.5px solid var(--bd);overflow:hidden;margin-bottom:4px}
@@ -105,8 +91,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
 .set-time{background:var(--bg3);border:0.5px solid var(--bd2);border-radius:8px;color:var(--tx);font-size:12px;padding:6px 10px;font-family:inherit;outline:none}
 .test-btn{padding:6px 14px;border-radius:20px;background:rgba(74,158,255,0.12);border:0.5px solid rgba(74,158,255,0.3);color:var(--cn);font-size:12px;cursor:pointer}
 .test-btn:active{opacity:.7}
-
-/* Voice overlay */
 .voice-ov{display:none;position:absolute;inset:0;z-index:50;background:rgba(0,0,0,0.9);align-items:center;justify-content:center;flex-direction:column;gap:20px}
 .voice-ov.on{display:flex;animation:fdin .2s ease}
 .v-ring{width:100px;height:100px;border-radius:50%;background:rgba(255,79,79,0.12);border:2px solid rgba(255,79,79,0.4);display:flex;align-items:center;justify-content:center;font-size:42px;animation:vpulse .7s ease-in-out infinite}
@@ -114,8 +98,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
 .v-hint{font-size:15px;color:rgba(255,255,255,0.6)}
 .v-trans{font-size:18px;font-weight:500;color:#fff;text-align:center;padding:0 32px;min-height:28px}
 .v-stop{padding:12px 28px;border-radius:40px;background:var(--cu);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer}
-
-/* Alarm overlay */
 .alarm-ov{display:none;position:absolute;inset:0;z-index:99;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:24px}
 .alarm-ov.on{display:flex;animation:fdin .25s ease}
 @keyframes fdin{from{opacity:0}to{opacity:1}}
@@ -134,7 +116,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
 .alarm-ok.normal{background:var(--cn);color:#fff}
 .alarm-ok.urgent{background:var(--cu);color:#fff}
 .alarm-ok:active{opacity:.85}
-
 @keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
 .dots span{animation:dot 1.2s infinite;display:inline-block}
 .dots span:nth-child(2){animation-delay:.2s}
@@ -153,11 +134,9 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
     <div class="hdr-settings" onclick="togglePage()" id="settings-btn">⚙️</div>
   </div>
 
-  <!-- PAGE PRINCIPALE -->
   <div class="page active" id="page-main">
     <div id="perm-banner" class="banner bwarn" onclick="reqNotif()" style="display:none">⚠️ Activer les notifications → Appuyez ici</div>
     <div id="sw-ok" class="banner bok" style="display:none">✓ Notifications en arrière-plan actives</div>
-
     <div class="wx-card">
       <div class="wx-main">
         <div class="wx-icon" id="wx-icon">🌤️</div>
@@ -169,7 +148,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
       </div>
       <div class="wx-status" id="wx-status"></div>
     </div>
-
     <div class="ai-card">
       <div class="ai-lbl">Créer des rappels via IA</div>
       <textarea class="ai-ta" id="ai-input" placeholder="Parlez ou écrivez en français naturel..."></textarea>
@@ -190,7 +168,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
       </div>
       <div class="ai-status" id="ai-status"></div>
     </div>
-
     <div class="sec-lbl" id="sec-lbl" style="display:none">À venir</div>
     <div class="list" id="list"></div>
     <div class="empty" id="empty">
@@ -199,267 +176,80 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
     </div>
   </div>
 
-  <!-- PAGE PARAMÈTRES -->
   <div class="page" id="page-settings">
-
     <div class="set-section">
       <div class="set-title">🔊 Sons & Alarmes</div>
       <div class="set-group">
-        <div class="set-row">
-          <div class="set-ico">🔔</div>
-          <div class="set-info"><div class="set-name">Sonnerie normale</div><div class="set-hint">Type de son pour rappels normaux</div></div>
-          <div class="set-ctrl">
-            <select class="set-select" id="s-sound-normal" onchange="saveSettings()">
-              <option value="sine">Doux (sine)</option>
-              <option value="triangle">Cristal</option>
-              <option value="square">Électro</option>
-              <option value="sawtooth">Aigu</option>
-            </select>
-          </div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🚨</div>
-          <div class="set-info"><div class="set-name">Sonnerie urgente</div><div class="set-hint">Type de son pour rappels urgents</div></div>
-          <div class="set-ctrl">
-            <select class="set-select" id="s-sound-urgent" onchange="saveSettings()">
-              <option value="square">Urgent (square)</option>
-              <option value="sawtooth">Strident</option>
-              <option value="triangle">Pulsé</option>
-              <option value="sine">Doux</option>
-            </select>
-          </div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🔈</div>
-          <div class="set-info"><div class="set-name">Volume</div><div class="set-hint">Volume des sonneries</div></div>
-          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
-            <input type="range" class="set-range" id="s-volume" min="1" max="10" value="5" oninput="updateVal('s-volume','s-volume-val');saveSettings()">
-            <span class="set-val" id="s-volume-val">5</span>
-          </div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">⏱️</div>
-          <div class="set-info"><div class="set-name">Répétition normale</div><div class="set-hint">Secondes entre chaque sonnerie</div></div>
-          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
-            <input type="range" class="set-range" id="s-repeat-normal" min="2" max="30" value="5" oninput="updateVal('s-repeat-normal','s-rn-val');saveSettings()">
-            <span class="set-val" id="s-rn-val">5s</span>
-          </div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">⚡</div>
-          <div class="set-info"><div class="set-name">Répétition urgente</div><div class="set-hint">Secondes entre chaque sonnerie</div></div>
-          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
-            <input type="range" class="set-range" id="s-repeat-urgent" min="1" max="10" value="3" oninput="updateVal('s-repeat-urgent','s-ru-val');saveSettings()">
-            <span class="set-val" id="s-ru-val">3s</span>
-          </div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🧪</div>
-          <div class="set-info"><div class="set-name">Tester les sons</div><div class="set-hint">Écouter avant de valider</div></div>
-          <div class="set-ctrl" style="display:flex;gap:6px">
-            <button class="test-btn" onclick="testSound('normal')">Normal</button>
-            <button class="test-btn" onclick="testSound('urgent')" style="background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.3);color:var(--cu)">Urgent</button>
-          </div>
-        </div>
+        <div class="set-row"><div class="set-ico">🔔</div><div class="set-info"><div class="set-name">Sonnerie normale</div><div class="set-hint">Type de son pour rappels normaux</div></div><div class="set-ctrl"><select class="set-select" id="s-sound-normal" onchange="saveSettings()"><option value="sine">Doux (sine)</option><option value="triangle">Cristal</option><option value="square">Électro</option><option value="sawtooth">Aigu</option></select></div></div>
+        <div class="set-row"><div class="set-ico">🚨</div><div class="set-info"><div class="set-name">Sonnerie urgente</div><div class="set-hint">Type de son pour rappels urgents</div></div><div class="set-ctrl"><select class="set-select" id="s-sound-urgent" onchange="saveSettings()"><option value="square">Urgent (square)</option><option value="sawtooth">Strident</option><option value="triangle">Pulsé</option><option value="sine">Doux</option></select></div></div>
+        <div class="set-row"><div class="set-ico">🔈</div><div class="set-info"><div class="set-name">Volume</div><div class="set-hint">Volume des sonneries</div></div><div class="set-ctrl" style="display:flex;align-items:center;gap:8px"><input type="range" class="set-range" id="s-volume" min="1" max="10" value="5" oninput="updateVal('s-volume','s-volume-val');saveSettings()"><span class="set-val" id="s-volume-val">5</span></div></div>
+        <div class="set-row"><div class="set-ico">⏱️</div><div class="set-info"><div class="set-name">Répétition normale</div><div class="set-hint">Secondes entre chaque sonnerie</div></div><div class="set-ctrl" style="display:flex;align-items:center;gap:8px"><input type="range" class="set-range" id="s-repeat-normal" min="2" max="30" value="5" oninput="updateVal('s-repeat-normal','s-rn-val');saveSettings()"><span class="set-val" id="s-rn-val">5s</span></div></div>
+        <div class="set-row"><div class="set-ico">⚡</div><div class="set-info"><div class="set-name">Répétition urgente</div><div class="set-hint">Secondes entre chaque sonnerie</div></div><div class="set-ctrl" style="display:flex;align-items:center;gap:8px"><input type="range" class="set-range" id="s-repeat-urgent" min="1" max="10" value="3" oninput="updateVal('s-repeat-urgent','s-ru-val');saveSettings()"><span class="set-val" id="s-ru-val">3s</span></div></div>
+        <div class="set-row"><div class="set-ico">🧪</div><div class="set-info"><div class="set-name">Tester les sons</div><div class="set-hint">Écouter avant de valider</div></div><div class="set-ctrl" style="display:flex;gap:6px"><button class="test-btn" onclick="testSound('normal')">Normal</button><button class="test-btn" onclick="testSound('urgent')" style="background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.3);color:var(--cu)">Urgent</button></div></div>
       </div>
     </div>
-
     <div class="set-section">
       <div class="set-title">📳 Vibration</div>
       <div class="set-group">
-        <div class="set-row">
-          <div class="set-ico">📳</div>
-          <div class="set-info"><div class="set-name">Vibration activée</div><div class="set-hint">Vibrer lors des rappels</div></div>
-          <div class="set-ctrl"><div class="tog on" id="t-vibration" onclick="toggleSetting('t-vibration','vibration')"><div class="tog-dot"></div></div></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">💥</div>
-          <div class="set-info"><div class="set-name">Pattern normal</div><div class="set-hint">Motif de vibration</div></div>
-          <div class="set-ctrl">
-            <select class="set-select" id="s-vib-normal" onchange="saveSettings()">
-              <option value="soft">Doux (court)</option>
-              <option value="medium">Moyen</option>
-              <option value="strong">Fort (long)</option>
-            </select>
-          </div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">⚡</div>
-          <div class="set-info"><div class="set-name">Pattern urgent</div><div class="set-hint">Motif de vibration urgent</div></div>
-          <div class="set-ctrl">
-            <select class="set-select" id="s-vib-urgent" onchange="saveSettings()">
-              <option value="sos">SOS (3×3)</option>
-              <option value="rapid">Rapide répété</option>
-              <option value="strong">Fort continu</option>
-            </select>
-          </div>
-        </div>
+        <div class="set-row"><div class="set-ico">📳</div><div class="set-info"><div class="set-name">Vibration activée</div><div class="set-hint">Vibrer lors des rappels</div></div><div class="set-ctrl"><div class="tog on" id="t-vibration" onclick="toggleSetting('t-vibration','vibration')"><div class="tog-dot"></div></div></div></div>
+        <div class="set-row"><div class="set-ico">💥</div><div class="set-info"><div class="set-name">Pattern normal</div><div class="set-hint">Motif de vibration</div></div><div class="set-ctrl"><select class="set-select" id="s-vib-normal" onchange="saveSettings()"><option value="soft">Doux (court)</option><option value="medium">Moyen</option><option value="strong">Fort (long)</option></select></div></div>
+        <div class="set-row"><div class="set-ico">⚡</div><div class="set-info"><div class="set-name">Pattern urgent</div><div class="set-hint">Motif de vibration urgent</div></div><div class="set-ctrl"><select class="set-select" id="s-vib-urgent" onchange="saveSettings()"><option value="sos">SOS (3×3)</option><option value="rapid">Rapide répété</option><option value="strong">Fort continu</option></select></div></div>
       </div>
     </div>
-
     <div class="set-section">
       <div class="set-title">🌤️ Météo</div>
       <div class="set-group">
-        <div class="set-row">
-          <div class="set-ico">⏰</div>
-          <div class="set-info"><div class="set-name">Heure du rappel météo</div><div class="set-hint">Check météo quotidien</div></div>
-          <div class="set-ctrl"><input type="time" class="set-time" id="s-wx-time" value="07:30" onchange="saveSettings()"></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🗣️</div>
-          <div class="set-info"><div class="set-name">Annonce vocale météo</div><div class="set-hint">Lire la météo à voix haute</div></div>
-          <div class="set-ctrl"><div class="tog on" id="t-wx-voice" onclick="toggleSetting('t-wx-voice','wxVoice')"><div class="tog-dot"></div></div></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🔈</div>
-          <div class="set-info"><div class="set-name">Vitesse vocale</div><div class="set-hint">Vitesse de lecture de la météo</div></div>
-          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
-            <input type="range" class="set-range" id="s-voice-rate" min="5" max="15" value="9" oninput="updateVal('s-voice-rate','s-vr-val');saveSettings()">
-            <span class="set-val" id="s-vr-val">0.9x</span>
-          </div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🧪</div>
-          <div class="set-info"><div class="set-name">Tester la voix</div><div class="set-hint">Aperçu de la synthèse vocale</div></div>
-          <div class="set-ctrl"><button class="test-btn" onclick="testVoice()">Tester</button></div>
-        </div>
+        <div class="set-row"><div class="set-ico">⏰</div><div class="set-info"><div class="set-name">Heure du rappel météo</div><div class="set-hint">Check météo quotidien</div></div><div class="set-ctrl"><input type="time" class="set-time" id="s-wx-time" value="07:30" onchange="saveSettings()"></div></div>
+        <div class="set-row"><div class="set-ico">🗣️</div><div class="set-info"><div class="set-name">Annonce vocale météo</div><div class="set-hint">Lire la météo à voix haute</div></div><div class="set-ctrl"><div class="tog on" id="t-wx-voice" onclick="toggleSetting('t-wx-voice','wxVoice')"><div class="tog-dot"></div></div></div></div>
+        <div class="set-row"><div class="set-ico">🔈</div><div class="set-info"><div class="set-name">Vitesse vocale</div><div class="set-hint">Vitesse de lecture de la météo</div></div><div class="set-ctrl" style="display:flex;align-items:center;gap:8px"><input type="range" class="set-range" id="s-voice-rate" min="5" max="15" value="9" oninput="updateVal('s-voice-rate','s-vr-val');saveSettings()"><span class="set-val" id="s-vr-val">0.9x</span></div></div>
+        <div class="set-row"><div class="set-ico">🧪</div><div class="set-info"><div class="set-name">Tester la voix</div><div class="set-hint">Aperçu de la synthèse vocale</div></div><div class="set-ctrl"><button class="test-btn" onclick="testVoice()">Tester</button></div></div>
       </div>
     </div>
-
     <div class="set-section">
       <div class="set-title">🗣️ Annonces vocales des rappels</div>
       <div class="set-group">
-        <div class="set-row">
-          <div class="set-ico">🔊</div>
-          <div class="set-info"><div class="set-name">Annonce vocale activée</div><div class="set-hint">L'appli lit les rappels à voix haute</div></div>
-          <div class="set-ctrl"><div class="tog on" id="t-remind-voice" onclick="toggleSetting('t-remind-voice','remindVoice')"><div class="tog-dot"></div></div></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🕐</div>
-          <div class="set-info"><div class="set-name">Heure de début</div><div class="set-hint">Pas d'annonce avant cette heure</div></div>
-          <div class="set-ctrl"><input type="time" class="set-time" id="s-voice-from" value="07:00" onchange="saveSettings()"></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🕙</div>
-          <div class="set-info"><div class="set-name">Heure de fin</div><div class="set-hint">Pas d'annonce après cette heure</div></div>
-          <div class="set-ctrl"><input type="time" class="set-time" id="s-voice-to" value="22:00" onchange="saveSettings()"></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🔈</div>
-          <div class="set-info"><div class="set-name">Vitesse d'annonce</div><div class="set-hint">Vitesse de lecture des rappels</div></div>
-          <div class="set-ctrl" style="display:flex;align-items:center;gap:8px">
-            <input type="range" class="set-range" id="s-remind-rate" min="5" max="15" value="9" oninput="updateVal('s-remind-rate','s-rrate-val');saveSettings()">
-            <span class="set-val" id="s-rrate-val">0.9x</span>
-          </div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">📢</div>
-          <div class="set-info"><div class="set-name">Urgent = voix plus forte</div><div class="set-hint">Augmente le volume pour les urgents</div></div>
-          <div class="set-ctrl"><div class="tog on" id="t-urgent-louder" onclick="toggleSetting('t-urgent-louder','urgentLouder')"><div class="tog-dot"></div></div></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🧪</div>
-          <div class="set-info"><div class="set-name">Tester l'annonce</div><div class="set-hint">Aperçu de la voix des rappels</div></div>
-          <div class="set-ctrl" style="display:flex;gap:6px">
-            <button class="test-btn" onclick="testRemindVoice('normal')">Normal</button>
-            <button class="test-btn" onclick="testRemindVoice('urgent')" style="background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.3);color:var(--cu)">Urgent</button>
-          </div>
-        </div>
+        <div class="set-row"><div class="set-ico">🔊</div><div class="set-info"><div class="set-name">Annonce vocale activée</div><div class="set-hint">L'appli lit les rappels à voix haute</div></div><div class="set-ctrl"><div class="tog on" id="t-remind-voice" onclick="toggleSetting('t-remind-voice','remindVoice')"><div class="tog-dot"></div></div></div></div>
+        <div class="set-row"><div class="set-ico">🕐</div><div class="set-info"><div class="set-name">Heure de début</div><div class="set-hint">Pas d'annonce avant cette heure</div></div><div class="set-ctrl"><input type="time" class="set-time" id="s-voice-from" value="07:00" onchange="saveSettings()"></div></div>
+        <div class="set-row"><div class="set-ico">🕙</div><div class="set-info"><div class="set-name">Heure de fin</div><div class="set-hint">Pas d'annonce après cette heure</div></div><div class="set-ctrl"><input type="time" class="set-time" id="s-voice-to" value="22:00" onchange="saveSettings()"></div></div>
+        <div class="set-row"><div class="set-ico">🔈</div><div class="set-info"><div class="set-name">Vitesse d'annonce</div><div class="set-hint">Vitesse de lecture des rappels</div></div><div class="set-ctrl" style="display:flex;align-items:center;gap:8px"><input type="range" class="set-range" id="s-remind-rate" min="5" max="15" value="9" oninput="updateVal('s-remind-rate','s-rrate-val');saveSettings()"><span class="set-val" id="s-rrate-val">0.9x</span></div></div>
+        <div class="set-row"><div class="set-ico">📢</div><div class="set-info"><div class="set-name">Urgent = voix plus forte</div><div class="set-hint">Augmente le volume pour les urgents</div></div><div class="set-ctrl"><div class="tog on" id="t-urgent-louder" onclick="toggleSetting('t-urgent-louder','urgentLouder')"><div class="tog-dot"></div></div></div></div>
+        <div class="set-row"><div class="set-ico">🧪</div><div class="set-info"><div class="set-name">Tester l'annonce</div><div class="set-hint">Aperçu de la voix des rappels</div></div><div class="set-ctrl" style="display:flex;gap:6px"><button class="test-btn" onclick="testRemindVoice('normal')">Normal</button><button class="test-btn" onclick="testRemindVoice('urgent')" style="background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.3);color:var(--cu)">Urgent</button></div></div>
       </div>
     </div>
-
     <div class="set-section">
       <div class="set-title">📲 Notifications système</div>
       <div class="set-group">
-        <div class="set-row">
-          <div class="set-ico">🔔</div>
-          <div class="set-info">
-            <div class="set-name">Notifications par-dessus les applis</div>
-            <div class="set-hint">Apparaît même si une autre appli est ouverte</div>
-          </div>
-          <div class="set-ctrl"><button class="test-btn" onclick="openAndroidNotifSettings()">Régler</button></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🔒</div>
-          <div class="set-info">
-            <div class="set-name">Sur l'écran de verrouillage</div>
-            <div class="set-hint">Afficher les rappels sur l'écran verrouillé</div>
-          </div>
-          <div class="set-ctrl"><button class="test-btn" onclick="openAndroidNotifSettings()">Régler</button></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">⚡</div>
-          <div class="set-info">
-            <div class="set-name">Importance maximale</div>
-            <div class="set-hint">Pour notifications urgentes prioritaires</div>
-          </div>
-          <div class="set-ctrl"><button class="test-btn" onclick="openAndroidNotifSettings()">Régler</button></div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">📋</div>
-          <div class="set-info">
-            <div class="set-name">Guide pas à pas</div>
-            <div class="set-hint">Comment activer sur Honor MagicOS</div>
-          </div>
-          <div class="set-ctrl"><button class="test-btn" onclick="showNotifGuide()">Voir</button></div>
-        </div>
+        <div class="set-row"><div class="set-ico">🔔</div><div class="set-info"><div class="set-name">Notifications par-dessus les applis</div><div class="set-hint">Apparaît même si une autre appli est ouverte</div></div><div class="set-ctrl"><button class="test-btn" onclick="openAndroidNotifSettings()">Régler</button></div></div>
+        <div class="set-row"><div class="set-ico">🔒</div><div class="set-info"><div class="set-name">Sur l'écran de verrouillage</div><div class="set-hint">Afficher les rappels sur l'écran verrouillé</div></div><div class="set-ctrl"><button class="test-btn" onclick="openAndroidNotifSettings()">Régler</button></div></div>
+        <div class="set-row"><div class="set-ico">📋</div><div class="set-info"><div class="set-name">Guide pas à pas</div><div class="set-hint">Comment activer sur Honor MagicOS</div></div><div class="set-ctrl"><button class="test-btn" onclick="showNotifGuide()">Voir</button></div></div>
       </div>
       <div id="notif-guide" style="display:none;background:var(--bg3);border-radius:12px;padding:14px;margin-top:8px;font-size:12px;color:var(--mt);line-height:1.8">
         <strong style="color:var(--tx);display:block;margin-bottom:6px">📱 Sur Honor MagicOS :</strong>
         1. Paramètres → Applications → RappelIA<br>
         2. → Notifications → Général<br>
         3. Activer <strong style="color:var(--tx)">"Afficher les notifications"</strong><br>
-        4. Style → <strong style="color:var(--tx)">Bannières</strong> (pas Bandeaux)<br>
+        4. Style → <strong style="color:var(--tx)">Bannières</strong><br>
         5. Activer <strong style="color:var(--tx)">"Sur écran verrouillé"</strong><br>
         6. Activer <strong style="color:var(--tx)">"En dépit de Ne pas déranger"</strong><br>
         7. Importance → <strong style="color:var(--tx)">Élevée ou Urgente</strong>
       </div>
     </div>
-
     <div class="set-section">
       <div class="set-title">🎨 Apparence</div>
       <div class="set-group">
-        <div class="set-row">
-          <div class="set-ico">🌗</div>
-          <div class="set-info"><div class="set-name">Thème</div><div class="set-hint">Apparence de l'appli</div></div>
-          <div class="set-ctrl">
-            <select class="set-select" id="s-theme" onchange="applyTheme()">
-              <option value="auto">Automatique</option>
-              <option value="dark">Sombre</option>
-              <option value="light">Clair</option>
-            </select>
-          </div>
-        </div>
+        <div class="set-row"><div class="set-ico">🌗</div><div class="set-info"><div class="set-name">Thème</div><div class="set-hint">Apparence de l'appli</div></div><div class="set-ctrl"><select class="set-select" id="s-theme" onchange="applyTheme()"><option value="auto">Automatique</option><option value="dark">Sombre</option><option value="light">Clair</option></select></div></div>
       </div>
     </div>
-
     <div class="set-section">
       <div class="set-title">🤖 IA & Langue</div>
       <div class="set-group">
-        <div class="set-row">
-          <div class="set-ico">🌍</div>
-          <div class="set-info"><div class="set-name">Langue de reconnaissance</div><div class="set-hint">Langue pour la dictée vocale</div></div>
-          <div class="set-ctrl">
-            <select class="set-select" id="s-lang" onchange="saveSettings()">
-              <option value="fr-FR">Français</option>
-              <option value="en-US">English</option>
-              <option value="es-ES">Español</option>
-              <option value="de-DE">Deutsch</option>
-            </select>
-          </div>
-        </div>
-        <div class="set-row">
-          <div class="set-ico">🧹</div>
-          <div class="set-info"><div class="set-name">Effacer tous les rappels</div><div class="set-hint">Supprimer tous les rappels en cours</div></div>
-          <div class="set-ctrl"><button class="test-btn" style="background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.3);color:var(--cu)" onclick="clearAll()">Effacer</button></div>
-        </div>
+        <div class="set-row"><div class="set-ico">🌍</div><div class="set-info"><div class="set-name">Langue de reconnaissance</div><div class="set-hint">Langue pour la dictée vocale</div></div><div class="set-ctrl"><select class="set-select" id="s-lang" onchange="saveSettings()"><option value="fr-FR">Français</option><option value="en-US">English</option><option value="es-ES">Español</option><option value="de-DE">Deutsch</option></select></div></div>
+        <div class="set-row"><div class="set-ico">🧹</div><div class="set-info"><div class="set-name">Effacer tous les rappels</div><div class="set-hint">Supprimer tous les rappels en cours</div></div><div class="set-ctrl"><button class="test-btn" style="background:rgba(255,79,79,0.12);border-color:rgba(255,79,79,0.3);color:var(--cu)" onclick="clearAll()">Effacer</button></div></div>
       </div>
     </div>
-
     <div style="height:20px"></div>
   </div>
 
-  <!-- Voice overlay -->
   <div class="voice-ov" id="voice-ov">
     <div class="v-ring">🎙️</div>
     <div class="v-hint">Je vous écoute...</div>
@@ -467,7 +257,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
     <button class="v-stop" onclick="stopVoice()">Arrêter</button>
   </div>
 
-  <!-- Alarm overlay -->
   <div class="alarm-ov" id="alarm-ov">
     <div class="alarm-box">
       <div class="alarm-ring" id="alarm-ring">🔔</div>
@@ -479,7 +268,9 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
   </div>
 </div>
 
-<script>
+<script type="module">
+import { TextToSpeech } from 'https://esm.sh/@capacitor-community/text-to-speech';
+
 const WORKER='https://rappel-ia.joel-bevilacqua0667.workers.dev';
 let reminders=[],audioCtx=null,alarmLoop=null,currentAlarm=null,swReg=null;
 let recognition=null,isListening=false,wxCoords=null,wxVoiceOn=true;
@@ -492,6 +283,53 @@ let cfg={
   theme:'auto',lang:'fr-FR',
   remindVoice:true,voiceFrom:'07:00',voiceTo:'22:00',remindRate:0.9,urgentLouder:true
 };
+
+// ✅ TTS via plugin Capacitor avec fallback Web Speech
+async function ttsSpeak(text, rate, pitch, volume){
+  try{
+    await TextToSpeech.speak({text, lang:'fr-FR', rate:rate||0.9, pitch:pitch||1.0, volume:volume||1.0, category:'ambient'});
+  }catch(e){
+    console.warn('Capacitor TTS failed, fallback:', e);
+    if(window.speechSynthesis){
+      const u=new SpeechSynthesisUtterance(text);
+      u.lang='fr-FR'; u.rate=rate||0.9; u.pitch=pitch||1; u.volume=volume||1;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    }
+  }
+}
+
+function speakText(text){
+  if(!wxVoiceOn)return;
+  ttsSpeak(text, cfg.voiceRate, 1.0, 1.0);
+}
+
+function testVoice(){
+  speakText('Bonjour ! Voici un test de la synthèse vocale de RappelIA. La météo du jour est ensoleillée et il fait 22 degrés.');
+}
+
+function isVoiceTimeActive(){
+  if(!cfg.remindVoice)return false;
+  const now=new Date();
+  const cur=now.getHours()*60+now.getMinutes();
+  const[fh,fm]=(cfg.voiceFrom||'07:00').split(':').map(Number);
+  const[th,tm]=(cfg.voiceTo||'22:00').split(':').map(Number);
+  return cur>=(fh*60+fm)&&cur<=(th*60+tm);
+}
+
+function speakReminder(message, importance){
+  if(!isVoiceTimeActive())return;
+  const rate=cfg.remindRate||0.9;
+  const isUrgent=importance==='urgent';
+  const text=(isUrgent?'Rappel URGENT ! ':'Rappel : ')+message;
+  ttsSpeak(text, isUrgent?Math.max(0.8,rate-0.1):rate, isUrgent?1.2:1.0, isUrgent&&cfg.urgentLouder?1.0:0.85);
+}
+
+function testRemindVoice(imp){
+  const wasOff=!cfg.remindVoice; cfg.remindVoice=true;
+  speakReminder(imp==='urgent'?'Vérifier vos positions de trading maintenant.':'Pensez à boire de l\'eau.',imp);
+  if(wasOff)cfg.remindVoice=false;
+}
 
 function loadSettings(){
   const s=localStorage.getItem('rappelia_cfg');
@@ -581,58 +419,29 @@ function togglePage(){
 }
 
 function audio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx}
-
 function playTone(freq,type,duration,vol,delay,ctx){
   const osc=ctx.createOscillator(),g=ctx.createGain();
   osc.connect(g);g.connect(ctx.destination);
   osc.frequency.value=freq;osc.type=type;
   const s=ctx.currentTime+delay;
-  g.gain.setValueAtTime(0,s);
-  g.gain.linearRampToValueAtTime(vol,s+0.025);
-  g.gain.linearRampToValueAtTime(0,s+duration);
+  g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(vol,s+0.025);g.gain.linearRampToValueAtTime(0,s+duration);
   osc.start(s);osc.stop(s+duration+0.06);
 }
-
 function playSound(imp){
   try{
-    const ctx=audio();
-    if(ctx.state==='suspended')ctx.resume();
-    const vol=(cfg.volume/10)*0.35;
-    const type=imp==='urgent'?cfg.soundUrgent:cfg.soundNormal;
-    if(imp==='urgent'){
-      playTone(880,type,.11,vol,0,ctx);playTone(880,type,.11,vol,.17,ctx);playTone(880,type,.11,vol,.34,ctx);
-      playTone(1100,type,.24,vol,.54,ctx);playTone(1100,type,.24,vol,.84,ctx);
-    }else{
-      playTone(523,type,.22,vol,0,ctx);playTone(659,type,.20,vol,.32,ctx);
-    }
+    const ctx=audio();if(ctx.state==='suspended')ctx.resume();
+    const vol=(cfg.volume/10)*0.35,type=imp==='urgent'?cfg.soundUrgent:cfg.soundNormal;
+    if(imp==='urgent'){playTone(880,type,.11,vol,0,ctx);playTone(880,type,.11,vol,.17,ctx);playTone(880,type,.11,vol,.34,ctx);playTone(1100,type,.24,vol,.54,ctx);playTone(1100,type,.24,vol,.84,ctx);}
+    else{playTone(523,type,.22,vol,0,ctx);playTone(659,type,.20,vol,.32,ctx);}
     if(cfg.vibration&&navigator.vibrate){
       const patterns={soft:[200],medium:[300,100,300],strong:[500,100,500],sos:[100,50,100,50,100,200,300,50,300,50,300,200,100,50,100,50,100],rapid:[100,50,100,50,100,50,100,50]};
       navigator.vibrate((imp==='urgent'?patterns[cfg.vibUrgent]:patterns[cfg.vibNormal])||[300]);
     }
   }catch(e){}
 }
-
 function testSound(imp){playSound(imp)}
 
-// ✅ TTS : AndroidBridge natif en priorité, fallback Web Speech
-function speakText(text){
-  if(!wxVoiceOn)return;
-  if(window.AndroidBridge){
-    AndroidBridge.speak(text, cfg.voiceRate);
-  }else if(window.speechSynthesis){
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang=cfg.lang;u.rate=cfg.voiceRate;u.pitch=1;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  }
-}
-
-function testVoice(){
-  speakText('Bonjour ! Voici un test de la synthèse vocale de RappelIA. La météo du jour est ensoleillée et il fait 22 degrés.');
-}
-
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}
-
 function fmt(dt){const d=new Date(dt),n=new Date(),tm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});return d.toDateString()===n.toDateString()?`Aujourd'hui à ${tm}`:d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+` à ${tm}`}
 function cd(dt){const ms=new Date(dt)-new Date();if(ms<=0)return'Maintenant';const m=Math.floor(ms/60000),h=Math.floor(m/60),rm=m%60;if(h>0)return`dans ${h}h${rm>0?rm+'min':''}`;if(m>0)return`dans ${m} min`;return'dans < 1 min'}
 function uid(){return`r_${Date.now()}_${Math.random().toString(36).slice(2)}`}
@@ -696,16 +505,19 @@ function showAlarm(r){
   alarmLoop=setInterval(()=>playSound(r.importance),interval);
   setTimeout(()=>speakReminder(r.message,r.importance),800);
 }
-
 function dismiss(){clearInterval(alarmLoop);currentAlarm=null;document.getElementById('alarm-ov').classList.remove('on');render()}
 
 async function reqNotif(){const p=await Notification.requestPermission();if(p==='granted')document.getElementById('perm-banner').style.display='none'}
-
 function setIn(txt){document.getElementById('ai-input').value=txt;document.getElementById('ai-input').focus()}
 
-// STT : AndroidBridge natif en priorité
+function toggleVoice(){
+  if(isListening){stopVoice();return}
+  if(!recognition)recognition=initRec();
+  if(!recognition)return;
+  try{recognition.start()}catch(e){recognition=null}
+}
+
 function initRec(){
-  if(window.AndroidBridge){return null} // géré par AndroidBridge.startSpeech()
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){alert("Reconnaissance vocale non supportée.");return null}
   const r=new SR();r.lang=cfg.lang;r.continuous=false;r.interimResults=true;
@@ -716,38 +528,19 @@ function initRec(){
   return r;
 }
 
-function toggleVoice(){
-  if(isListening){stopVoice();return}
-  if(window.AndroidBridge){
-    // ✅ Lance le STT natif Android
-    isListening=true;
-    document.getElementById('voice-ov').classList.add('on');
-    document.getElementById('mic-btn').classList.add('listening');
-    document.getElementById('mic-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg> Écoute...';
-    document.getElementById('v-trans').textContent='';
-    AndroidBridge.startSpeech();
-    return;
-  }
-  if(!recognition)recognition=initRec();
-  if(!recognition)return;
-  try{recognition.start()}catch(e){recognition=null}
-}
-
-// ✅ Callback appelé par MainActivity quand la reconnaissance est terminée
-function onSpeechResult(text){
-  document.getElementById('v-trans').textContent=text;
-  document.getElementById('ai-input').value=text;
-  stopVoice();
-  setTimeout(()=>sendAI(),400);
-}
-
 function stopVoice(){
   isListening=false;
   document.getElementById('voice-ov').classList.remove('on');
   document.getElementById('mic-btn').classList.remove('listening');
   document.getElementById('mic-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Parler';
-  if(window.AndroidBridge)AndroidBridge.stopSpeech();
   try{if(recognition)recognition.stop()}catch(e){}
+}
+
+function onSpeechResult(text){
+  document.getElementById('v-trans').textContent=text;
+  document.getElementById('ai-input').value=text;
+  stopVoice();
+  setTimeout(()=>sendAI(),400);
 }
 
 async function sendAI(){
@@ -781,42 +574,7 @@ async function sendAI(){
   btn.disabled=false;
 }
 
-function isVoiceTimeActive(){
-  if(!cfg.remindVoice)return false;
-  const now=new Date();
-  const cur=now.getHours()*60+now.getMinutes();
-  const[fh,fm]=(cfg.voiceFrom||'07:00').split(':').map(Number);
-  const[th,tm]=(cfg.voiceTo||'22:00').split(':').map(Number);
-  return cur>=(fh*60+fm)&&cur<=(th*60+tm);
-}
-
-// ✅ TTS rappels : AndroidBridge natif en priorité
-function speakReminder(message,importance){
-  if(!isVoiceTimeActive())return;
-  const rate=cfg.remindRate||0.9;
-  const isUrgent=importance==='urgent';
-  const text=(isUrgent?'Rappel URGENT ! ':'Rappel : ')+message;
-  if(window.AndroidBridge){
-    AndroidBridge.speak(text, isUrgent&&cfg.urgentLouder?Math.max(0.8,rate-0.1):rate);
-  }else if(window.speechSynthesis){
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang=cfg.lang||'fr-FR';
-    u.rate=isUrgent&&cfg.urgentLouder?Math.max(0.8,rate-0.1):rate;
-    u.pitch=isUrgent?1.2:1;
-    u.volume=isUrgent&&cfg.urgentLouder?1:0.85;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  }
-}
-
-function testRemindVoice(imp){
-  const wasOff=!cfg.remindVoice;cfg.remindVoice=true;
-  speakReminder(imp==='urgent'?'Vérifier vos positions de trading maintenant.':'Pensez à boire de l\'eau.',imp);
-  if(wasOff)cfg.remindVoice=false;
-}
-
 const WX_CODES={0:'☀️ Ciel dégagé',1:'🌤️ Peu nuageux',2:'⛅ Partiellement nuageux',3:'☁️ Couvert',45:'🌫️ Brouillard',51:'🌦️ Bruine légère',61:'🌧️ Pluie légère',63:'🌧️ Pluie',65:'🌧️ Pluie forte',71:'🌨️ Neige légère',80:'🌦️ Averses',95:'⛈️ Orage'};
-
 function getWxAdvice(code,temp){
   if([61,63,65,51,80,81,82].includes(code))return'Pense à prendre ton parapluie !';
   if([71,73,75].includes(code))return'Il neige, couvre-toi bien !';
@@ -826,15 +584,13 @@ function getWxAdvice(code,temp){
   if(temp<=5)return'Il fait froid, couvre-toi bien !';
   return'Belle journée, profites-en !';
 }
-
 async function fetchWeather(){
   if(!wxCoords)return;
   try{
     const{lat,lon}=wxCoords;
     const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode&timezone=auto`);
     const data=await res.json();
-    const temp=Math.round(data.current.temperature_2m);
-    const code=data.current.weathercode;
+    const temp=Math.round(data.current.temperature_2m),code=data.current.weathercode;
     const desc=WX_CODES[code]||'🌤️ Variable';
     document.getElementById('wx-icon').textContent=desc.split(' ')[0];
     document.getElementById('wx-temp').textContent=temp+'°C';
@@ -843,7 +599,6 @@ async function fetchWeather(){
     return{temp,code,desc};
   }catch(e){document.getElementById('wx-desc').textContent='Météo indisponible'}
 }
-
 function getLocation(){
   if(!navigator.geolocation)return;
   document.getElementById('wx-desc').textContent='Localisation...';
@@ -858,12 +613,10 @@ function getLocation(){
     else document.getElementById('wx-desc').textContent='Localisation refusée';
   });
 }
-
 async function checkWxReminder(){
   const now=new Date();
   const[h,m]=cfg.wxTime.split(':').map(Number);
-  const lastFired=localStorage.getItem('wx_last_fired');
-  const today=now.toDateString();
+  const lastFired=localStorage.getItem('wx_last_fired'),today=now.toDateString();
   if(now.getHours()===h&&now.getMinutes()===m&&lastFired!==today){
     localStorage.setItem('wx_last_fired',today);
     const wx=await fetchWeather();
@@ -881,13 +634,11 @@ function openAndroidNotifSettings(){
   try{window.location.href='intent://settings/APP_NOTIFICATION_SETTINGS#Intent;scheme=android-app;package=com.android.settings;end';}catch(e){}
   setTimeout(()=>showNotifGuide(),500);
 }
-
 function showNotifGuide(){
   const g=document.getElementById('notif-guide');
   if(g)g.style.display=g.style.display==='none'?'block':'none';
 }
 
-// ✅ syncToWorker lit depuis localStorage (source de vérité)
 async function syncToWorker(){
   try{
     const saved=localStorage.getItem('rappel_ia_v3');
@@ -907,6 +658,28 @@ async function registerFCMToken(token){
     await fetch(WORKER+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token})});
   }catch(e){console.warn('FCM register:',e)}
 }
+
+// ✅ Expose fonctions globales pour les onclick HTML
+window.togglePage=togglePage;
+window.toggleVoice=toggleVoice;
+window.stopVoice=stopVoice;
+window.sendAI=sendAI;
+window.setIn=setIn;
+window.delR=delR;
+window.dismiss=dismiss;
+window.reqNotif=reqNotif;
+window.testSound=testSound;
+window.testVoice=testVoice;
+window.testRemindVoice=testRemindVoice;
+window.toggleSetting=toggleSetting;
+window.saveSettings=saveSettings;
+window.updateVal=updateVal;
+window.applyTheme=applyTheme;
+window.clearAll=clearAll;
+window.getLocation=getLocation;
+window.openAndroidNotifSettings=openAndroidNotifSettings;
+window.showNotifGuide=showNotifGuide;
+window.onSpeechResult=onSpeechResult;
 
 // Boot
 tick();setInterval(tick,1000);setInterval(checkLoop,60000);checkLoop();load();registerSW();loadSettings();
