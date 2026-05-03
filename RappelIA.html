@@ -484,7 +484,6 @@ const WORKER='https://rappel-ia.joel-bevilacqua0667.workers.dev';
 let reminders=[],audioCtx=null,alarmLoop=null,currentAlarm=null,swReg=null;
 let recognition=null,isListening=false,wxCoords=null,wxVoiceOn=true;
 
-// Settings defaults
 let cfg={
   soundNormal:'sine',soundUrgent:'square',
   volume:5,repeatNormal:5,repeatUrgent:3,
@@ -581,7 +580,6 @@ function togglePage(){
   }
 }
 
-// Audio
 function audio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx}
 
 function playTone(freq,type,duration,vol,delay,ctx){
@@ -602,73 +600,52 @@ function playSound(imp){
     const vol=(cfg.volume/10)*0.35;
     const type=imp==='urgent'?cfg.soundUrgent:cfg.soundNormal;
     if(imp==='urgent'){
-      playTone(880,type,.11,vol,0,ctx);
-      playTone(880,type,.11,vol,.17,ctx);
-      playTone(880,type,.11,vol,.34,ctx);
-      playTone(1100,type,.24,vol,.54,ctx);
-      playTone(1100,type,.24,vol,.84,ctx);
+      playTone(880,type,.11,vol,0,ctx);playTone(880,type,.11,vol,.17,ctx);playTone(880,type,.11,vol,.34,ctx);
+      playTone(1100,type,.24,vol,.54,ctx);playTone(1100,type,.24,vol,.84,ctx);
     }else{
-      playTone(523,type,.22,vol,0,ctx);
-      playTone(659,type,.20,vol,.32,ctx);
+      playTone(523,type,.22,vol,0,ctx);playTone(659,type,.20,vol,.32,ctx);
     }
     if(cfg.vibration&&navigator.vibrate){
-      const patterns={
-        soft:[200],medium:[300,100,300],strong:[500,100,500],
-        sos:[100,50,100,50,100,200,300,50,300,50,300,200,100,50,100,50,100],
-        rapid:[100,50,100,50,100,50,100,50],
-      };
-      const p=imp==='urgent'?patterns[cfg.vibUrgent]:patterns[cfg.vibNormal];
-      navigator.vibrate(p||[300]);
+      const patterns={soft:[200],medium:[300,100,300],strong:[500,100,500],sos:[100,50,100,50,100,200,300,50,300,50,300,200,100,50,100,50,100],rapid:[100,50,100,50,100,50,100,50]};
+      navigator.vibrate((imp==='urgent'?patterns[cfg.vibUrgent]:patterns[cfg.vibNormal])||[300]);
     }
   }catch(e){}
 }
 
 function testSound(imp){playSound(imp)}
 
-// Voice TTS
+// ✅ TTS : AndroidBridge natif en priorité, fallback Web Speech
 function speakText(text){
-  if(!wxVoiceOn||!window.speechSynthesis)return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang=cfg.lang;u.rate=cfg.voiceRate;u.pitch=1;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
+  if(!wxVoiceOn)return;
+  if(window.AndroidBridge){
+    AndroidBridge.speak(text, cfg.voiceRate);
+  }else if(window.speechSynthesis){
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang=cfg.lang;u.rate=cfg.voiceRate;u.pitch=1;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  }
 }
-function testVoice(){speakText('Bonjour ! Voici un test de la synthèse vocale de RappelIA. La météo du jour est ensoleillée et il fait 22 degrés.')}
 
-// Clock
+function testVoice(){
+  speakText('Bonjour ! Voici un test de la synthèse vocale de RappelIA. La météo du jour est ensoleillée et il fait 22 degrés.');
+}
+
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}
 
-// Helpers
 function fmt(dt){const d=new Date(dt),n=new Date(),tm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});return d.toDateString()===n.toDateString()?`Aujourd'hui à ${tm}`:d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+` à ${tm}`}
 function cd(dt){const ms=new Date(dt)-new Date();if(ms<=0)return'Maintenant';const m=Math.floor(ms/60000),h=Math.floor(m/60),rm=m%60;if(h>0)return`dans ${h}h${rm>0?rm+'min':''}`;if(m>0)return`dans ${m} min`;return'dans < 1 min'}
 function uid(){return`r_${Date.now()}_${Math.random().toString(36).slice(2)}`}
+function save(){localStorage.setItem('rappel_ia_v3',JSON.stringify(reminders))}
+function load(){try{const r=localStorage.getItem('rappel_ia_v3');if(r){const now=new Date();reminders=JSON.parse(r).filter(x=>new Date(x.datetime)>now)}}catch(e){reminders=[]}render()}
 
-// ✅ FIX : save() écrit dans localStorage ET met à jour la variable reminders
-function save(){
-  localStorage.setItem('rappel_ia_v3',JSON.stringify(reminders));
-}
-
-function load(){
-  try{
-    const r=localStorage.getItem('rappel_ia_v3');
-    if(r){
-      const now=new Date();
-      reminders=JSON.parse(r).filter(x=>new Date(x.datetime)>now);
-    }
-  }catch(e){reminders=[];}
-  render();
-}
-
-// SW
 async function registerSW(){
   if(!('serviceWorker'in navigator))return;
   if(location.hostname==='www.claudeusercontent.com'||location.hostname==='claudeusercontent.com')return;
   try{
     swReg=await navigator.serviceWorker.register('./sw.js');
     document.getElementById('sw-ok').style.display='flex';
-    navigator.serviceWorker.addEventListener('message',e=>{
-      if(e.data.type==='FIRED'){reminders=reminders.filter(r=>r.id!==e.data.id);save();render()}
-    });
+    navigator.serviceWorker.addEventListener('message',e=>{if(e.data.type==='FIRED'){reminders=reminders.filter(r=>r.id!==e.data.id);save();render()}});
     swMsg({type:'PING'});
     await initFCM();
   }catch(e){console.warn('SW:',e)}
@@ -676,34 +653,18 @@ async function registerSW(){
 
 async function initFCM(){
   try{
-    const {initializeApp}=await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-    const {getMessaging,getToken,onMessage}=await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
-    const app=initializeApp({
-      apiKey:'AIzaSyBtIlQ68KhAljcU6IpgjHFpItmSnw3QoYs',
-      authDomain:'rappel-ia.firebaseapp.com',
-      projectId:'rappel-ia',
-      storageBucket:'rappel-ia.firebasestorage.app',
-      messagingSenderId:'842192744071',
-      appId:'1:842192744071:web:e6b1962d3b4aa71af01222'
-    });
+    const{initializeApp}=await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+    const{getMessaging,getToken,onMessage}=await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
+    const app=initializeApp({apiKey:'AIzaSyBtIlQ68KhAljcU6IpgjHFpItmSnw3QoYs',authDomain:'rappel-ia.firebaseapp.com',projectId:'rappel-ia',storageBucket:'rappel-ia.firebasestorage.app',messagingSenderId:'842192744071',appId:'1:842192744071:web:e6b1962d3b4aa71af01222'});
     const messaging=getMessaging(app);
-    const token=await getToken(messaging,{
-      vapidKey:'BCDHuuse1ZGOBVMuRJ6QL_mU3pkiJwGLgxF476I9KceHH1JxTRdbgD0qtNvcOKd_pqaQ7yY_AIVsgFXbFeLytig',
-      serviceWorkerRegistration:swReg
-    });
+    const token=await getToken(messaging,{vapidKey:'BCDHuuse1ZGOBVMuRJ6QL_mU3pkiJwGLgxF476I9KceHH1JxTRdbgD0qtNvcOKd_pqaQ7yY_AIVsgFXbFeLytig',serviceWorkerRegistration:swReg});
     if(token){await registerFCMToken(token);}
-    onMessage(messaging,payload=>{
-      const{title,body}=payload.data||{};
-      if(Notification.permission==='granted'){
-        new Notification(title||'RappelIA',{body:body||'',icon:'./icon-192.png',requireInteraction:true});
-      }
-    });
+    onMessage(messaging,payload=>{const{title,body}=payload.data||{};if(Notification.permission==='granted'){new Notification(title||'RappelIA',{body:body||'',icon:'./icon-192.png',requireInteraction:true});}});
   }catch(e){console.warn('FCM:',e)}
 }
 
 function swMsg(msg){if(swReg&&swReg.active){swReg.active.postMessage(msg);return}if(navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.active&&r.active.postMessage(msg))}
 
-// Render
 function render(){
   const now=new Date(),up=reminders.filter(r=>new Date(r.datetime)>now).sort((a,b)=>new Date(a.datetime)-new Date(b.datetime));
   const list=document.getElementById('list'),empty=document.getElementById('empty'),lbl=document.getElementById('sec-lbl');
@@ -712,15 +673,8 @@ function render(){
   list.innerHTML=up.map(r=>`<div class="r-card"><div class="r-ico ${r.importance}">${r.importance==='urgent'?'🚨':'🔔'}</div><div class="r-body"><div class="r-msg">${r.message}</div><div class="r-meta"><span class="r-badge ${r.importance}">${r.importance==='urgent'?'URGENT':'NORMAL'}</span><span id="cd-${r.id}">${cd(r.datetime)}</span> · ${fmt(r.datetime)}</div></div><button class="r-del" onclick="delR('${r.id}')">✕</button></div>`).join('');
 }
 
-function delR(id){
-  reminders=reminders.filter(r=>r.id!==id);
-  save();
-  swMsg({type:'DELETE',id});
-  syncToWorker();
-  render();
-}
+function delR(id){reminders=reminders.filter(r=>r.id!==id);save();swMsg({type:'DELETE',id});syncToWorker();render()}
 
-// Check
 function checkLoop(){
   if(!currentAlarm){const now=new Date(),due=reminders.find(r=>new Date(r.datetime)<=now);if(due)showAlarm(due)}
   reminders.forEach(r=>{const el=document.getElementById(`cd-${r.id}`);if(el)el.textContent=cd(r.datetime)});
@@ -742,16 +696,16 @@ function showAlarm(r){
   alarmLoop=setInterval(()=>playSound(r.importance),interval);
   setTimeout(()=>speakReminder(r.message,r.importance),800);
 }
+
 function dismiss(){clearInterval(alarmLoop);currentAlarm=null;document.getElementById('alarm-ov').classList.remove('on');render()}
 
-// Notif
 async function reqNotif(){const p=await Notification.requestPermission();if(p==='granted')document.getElementById('perm-banner').style.display='none'}
 
-// Input
 function setIn(txt){document.getElementById('ai-input').value=txt;document.getElementById('ai-input').focus()}
 
-// Voice STT
+// STT : AndroidBridge natif en priorité
 function initRec(){
+  if(window.AndroidBridge){return null} // géré par AndroidBridge.startSpeech()
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){alert("Reconnaissance vocale non supportée.");return null}
   const r=new SR();r.lang=cfg.lang;r.continuous=false;r.interimResults=true;
@@ -761,10 +715,41 @@ function initRec(){
   r.onend=()=>{if(isListening)stopVoice()};
   return r;
 }
-function toggleVoice(){if(isListening){stopVoice();return}if(!recognition)recognition=initRec();if(!recognition)return;try{recognition.start()}catch(e){recognition=null}}
-function stopVoice(){isListening=false;document.getElementById('voice-ov').classList.remove('on');document.getElementById('mic-btn').classList.remove('listening');document.getElementById('mic-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Parler';try{if(recognition)recognition.stop()}catch(e){}}
 
-// AI
+function toggleVoice(){
+  if(isListening){stopVoice();return}
+  if(window.AndroidBridge){
+    // ✅ Lance le STT natif Android
+    isListening=true;
+    document.getElementById('voice-ov').classList.add('on');
+    document.getElementById('mic-btn').classList.add('listening');
+    document.getElementById('mic-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg> Écoute...';
+    document.getElementById('v-trans').textContent='';
+    AndroidBridge.startSpeech();
+    return;
+  }
+  if(!recognition)recognition=initRec();
+  if(!recognition)return;
+  try{recognition.start()}catch(e){recognition=null}
+}
+
+// ✅ Callback appelé par MainActivity quand la reconnaissance est terminée
+function onSpeechResult(text){
+  document.getElementById('v-trans').textContent=text;
+  document.getElementById('ai-input').value=text;
+  stopVoice();
+  setTimeout(()=>sendAI(),400);
+}
+
+function stopVoice(){
+  isListening=false;
+  document.getElementById('voice-ov').classList.remove('on');
+  document.getElementById('mic-btn').classList.remove('listening');
+  document.getElementById('mic-btn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Parler';
+  if(window.AndroidBridge)AndroidBridge.stopSpeech();
+  try{if(recognition)recognition.stop()}catch(e){}
+}
+
 async function sendAI(){
   const input=document.getElementById('ai-input').value.trim();if(!input)return;
   const btn=document.getElementById('send-btn'),status=document.getElementById('ai-status');
@@ -782,9 +767,9 @@ async function sendAI(){
     const added=(parsed.reminders||[]).map(r=>({...r,id:uid()})).filter(r=>new Date(r.datetime)>now);
     if(!added.length)throw new Error('Aucune heure future dans la demande');
     reminders=[...reminders,...added];
-    save(); // ✅ sauvegarde immédiate dans localStorage
+    save();
     added.forEach(r=>swMsg({type:'ADD',reminder:r}));
-    setTimeout(()=>syncToWorker(),500); // ✅ délai pour s'assurer que save() est terminé
+    setTimeout(()=>syncToWorker(),500);
     status.textContent=parsed.summary||`${added.length} rappel(s) créé(s)`;
     document.getElementById('ai-input').value='';
     render();
@@ -796,40 +781,40 @@ async function sendAI(){
   btn.disabled=false;
 }
 
-// Vocal reminder announcement
 function isVoiceTimeActive(){
   if(!cfg.remindVoice)return false;
   const now=new Date();
   const cur=now.getHours()*60+now.getMinutes();
   const[fh,fm]=(cfg.voiceFrom||'07:00').split(':').map(Number);
   const[th,tm]=(cfg.voiceTo||'22:00').split(':').map(Number);
-  const from=fh*60+fm, to=th*60+tm;
-  return cur>=from&&cur<=to;
+  return cur>=(fh*60+fm)&&cur<=(th*60+tm);
 }
 
+// ✅ TTS rappels : AndroidBridge natif en priorité
 function speakReminder(message,importance){
   if(!isVoiceTimeActive())return;
-  if(!window.speechSynthesis)return;
   const rate=cfg.remindRate||0.9;
   const isUrgent=importance==='urgent';
-  const prefix=isUrgent?'Rappel URGENT ! ':'Rappel : ';
-  const u=new SpeechSynthesisUtterance(prefix+message);
-  u.lang=cfg.lang||'fr-FR';
-  u.rate=isUrgent&&cfg.urgentLouder?Math.max(0.8,rate-0.1):rate;
-  u.pitch=isUrgent?1.2:1;
-  u.volume=isUrgent&&cfg.urgentLouder?1:0.85;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
+  const text=(isUrgent?'Rappel URGENT ! ':'Rappel : ')+message;
+  if(window.AndroidBridge){
+    AndroidBridge.speak(text, isUrgent&&cfg.urgentLouder?Math.max(0.8,rate-0.1):rate);
+  }else if(window.speechSynthesis){
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang=cfg.lang||'fr-FR';
+    u.rate=isUrgent&&cfg.urgentLouder?Math.max(0.8,rate-0.1):rate;
+    u.pitch=isUrgent?1.2:1;
+    u.volume=isUrgent&&cfg.urgentLouder?1:0.85;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  }
 }
 
 function testRemindVoice(imp){
-  const wasOff=!cfg.remindVoice;
-  cfg.remindVoice=true;
+  const wasOff=!cfg.remindVoice;cfg.remindVoice=true;
   speakReminder(imp==='urgent'?'Vérifier vos positions de trading maintenant.':'Pensez à boire de l\'eau.',imp);
   if(wasOff)cfg.remindVoice=false;
 }
 
-// Weather
 const WX_CODES={0:'☀️ Ciel dégagé',1:'🌤️ Peu nuageux',2:'⛅ Partiellement nuageux',3:'☁️ Couvert',45:'🌫️ Brouillard',51:'🌦️ Bruine légère',61:'🌧️ Pluie légère',63:'🌧️ Pluie',65:'🌧️ Pluie forte',71:'🌨️ Neige légère',80:'🌦️ Averses',95:'⛈️ Orage'};
 
 function getWxAdvice(code,temp){
@@ -865,8 +850,7 @@ function getLocation(){
   navigator.geolocation.getCurrentPosition(pos=>{
     wxCoords={lat:pos.coords.latitude,lon:pos.coords.longitude};
     localStorage.setItem('wx_coords',JSON.stringify(wxCoords));
-    const btn=document.getElementById('wx-loc-btn');
-    if(btn)btn.style.display='none';
+    const btn=document.getElementById('wx-loc-btn');if(btn)btn.style.display='none';
     fetchWeather();
   },()=>{
     const s=localStorage.getItem('wx_coords');
@@ -893,10 +877,8 @@ async function checkWxReminder(){
   }
 }
 
-// Android notification settings
 function openAndroidNotifSettings(){
-  const intentUrl='intent://settings/APP_NOTIFICATION_SETTINGS#Intent;scheme=android-app;package=com.android.settings;end';
-  try{window.location.href=intentUrl;}catch(e){}
+  try{window.location.href='intent://settings/APP_NOTIFICATION_SETTINGS#Intent;scheme=android-app;package=com.android.settings;end';}catch(e){}
   setTimeout(()=>showNotifGuide(),500);
 }
 
@@ -905,58 +887,32 @@ function showNotifGuide(){
   if(g)g.style.display=g.style.display==='none'?'block':'none';
 }
 
-// ✅ FIX PRINCIPAL : syncToWorker lit depuis localStorage (source de vérité)
+// ✅ syncToWorker lit depuis localStorage (source de vérité)
 async function syncToWorker(){
   try{
     const saved=localStorage.getItem('rappel_ia_v3');
     const remindersToSync=saved?JSON.parse(saved):reminders;
-    if(!remindersToSync.length){
-      console.warn('Sync: rien à envoyer');
-      return;
-    }
+    if(!remindersToSync.length){console.warn('Sync: rien à envoyer');return;}
     const token=localStorage.getItem('fcm_token');
     const body={reminders:remindersToSync};
     if(token)body.token=token;
-    const res=await fetch(WORKER+'/sync',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(body)
-    });
-    const data=await res.json();
-    console.log('Sync OK:', remindersToSync.length, 'rappels envoyés');
+    await fetch(WORKER+'/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    console.log('Sync OK:',remindersToSync.length,'rappels envoyés');
   }catch(e){console.warn('Sync:',e)}
 }
 
-// Save FCM token
 async function registerFCMToken(token){
   try{
     localStorage.setItem('fcm_token',token);
-    await fetch(WORKER+'/register',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({token})
-    });
+    await fetch(WORKER+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token})});
   }catch(e){console.warn('FCM register:',e)}
 }
 
 // Boot
-tick();
-setInterval(tick,1000);
-setInterval(checkLoop,60000);
-checkLoop();
-load();
-registerSW();
-loadSettings();
+tick();setInterval(tick,1000);setInterval(checkLoop,60000);checkLoop();load();registerSW();loadSettings();
 const wxC=localStorage.getItem('wx_coords');if(wxC)wxCoords=JSON.parse(wxC);
 const wxCache=localStorage.getItem('wx_cache');
-if(wxCache){
-  const{temp,desc,ts}=JSON.parse(wxCache);
-  if(Date.now()-ts<3600000){
-    document.getElementById('wx-icon').textContent=desc.split(' ')[0];
-    document.getElementById('wx-temp').textContent=temp+'°C';
-    document.getElementById('wx-desc').textContent=desc.split(' ').slice(1).join(' ');
-  }
-}
+if(wxCache){const{temp,desc,ts}=JSON.parse(wxCache);if(Date.now()-ts<3600000){document.getElementById('wx-icon').textContent=desc.split(' ')[0];document.getElementById('wx-temp').textContent=temp+'°C';document.getElementById('wx-desc').textContent=desc.split(' ').slice(1).join(' ');}}
 getLocation();
 if('Notification'in window&&Notification.permission==='default')document.getElementById('perm-banner').style.display='flex';
 document.getElementById('ai-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI()}});
