@@ -326,7 +326,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
       </div>
     </div>
 
-
     <div class="set-section">
       <div class="set-title">🗣️ Annonces vocales des rappels</div>
       <div class="set-group">
@@ -368,7 +367,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx)}
         </div>
       </div>
     </div>
-
 
     <div class="set-section">
       <div class="set-title">📲 Notifications système</div>
@@ -517,7 +515,6 @@ function loadSettings(){
   if(!cfg.vibration)document.getElementById('t-vibration').classList.remove('on');
   if(!cfg.wxVoice)document.getElementById('t-wx-voice').classList.remove('on');
   wxVoiceOn=cfg.wxVoice;
-  // Vocal remind settings
   if(document.getElementById('s-voice-from'))document.getElementById('s-voice-from').value=cfg.voiceFrom||'07:00';
   if(document.getElementById('s-voice-to'))document.getElementById('s-voice-to').value=cfg.voiceTo||'22:00';
   if(document.getElementById('s-remind-rate')){document.getElementById('s-remind-rate').value=Math.round((cfg.remindRate||0.9)*10);document.getElementById('s-rrate-val').textContent=(cfg.remindRate||0.9)+'x';}
@@ -567,7 +564,7 @@ function applyTheme(){
 }
 
 function clearAll(){
-  if(confirm('Effacer tous les rappels ?')){reminders=[];save();render();}
+  if(confirm('Effacer tous les rappels ?')){reminders=[];save();syncToWorker();render();}
 }
 
 function togglePage(){
@@ -645,8 +642,22 @@ function tick(){document.getElementById('clock').textContent=new Date().toLocale
 function fmt(dt){const d=new Date(dt),n=new Date(),tm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});return d.toDateString()===n.toDateString()?`Aujourd'hui à ${tm}`:d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})+` à ${tm}`}
 function cd(dt){const ms=new Date(dt)-new Date();if(ms<=0)return'Maintenant';const m=Math.floor(ms/60000),h=Math.floor(m/60),rm=m%60;if(h>0)return`dans ${h}h${rm>0?rm+'min':''}`;if(m>0)return`dans ${m} min`;return'dans < 1 min'}
 function uid(){return`r_${Date.now()}_${Math.random().toString(36).slice(2)}`}
-function save(){localStorage.setItem('rappel_ia_v3',JSON.stringify(reminders))}
-function load(){try{const r=localStorage.getItem('rappel_ia_v3');if(r){const now=new Date();reminders=JSON.parse(r).filter(x=>new Date(x.datetime)>now)}}catch(e){reminders=[]}render()}
+
+// ✅ FIX : save() écrit dans localStorage ET met à jour la variable reminders
+function save(){
+  localStorage.setItem('rappel_ia_v3',JSON.stringify(reminders));
+}
+
+function load(){
+  try{
+    const r=localStorage.getItem('rappel_ia_v3');
+    if(r){
+      const now=new Date();
+      reminders=JSON.parse(r).filter(x=>new Date(x.datetime)>now);
+    }
+  }catch(e){reminders=[];}
+  render();
+}
 
 // SW
 async function registerSW(){
@@ -659,7 +670,6 @@ async function registerSW(){
       if(e.data.type==='FIRED'){reminders=reminders.filter(r=>r.id!==e.data.id);save();render()}
     });
     swMsg({type:'PING'});
-    // Init Firebase FCM
     await initFCM();
   }catch(e){console.warn('SW:',e)}
 }
@@ -681,7 +691,7 @@ async function initFCM(){
       vapidKey:'BCDHuuse1ZGOBVMuRJ6QL_mU3pkiJwGLgxF476I9KceHH1JxTRdbgD0qtNvcOKd_pqaQ7yY_AIVsgFXbFeLytig',
       serviceWorkerRegistration:swReg
     });
-    if(token){ await registerFCMToken(token); }
+    if(token){await registerFCMToken(token);}
     onMessage(messaging,payload=>{
       const{title,body}=payload.data||{};
       if(Notification.permission==='granted'){
@@ -690,6 +700,7 @@ async function initFCM(){
     });
   }catch(e){console.warn('FCM:',e)}
 }
+
 function swMsg(msg){if(swReg&&swReg.active){swReg.active.postMessage(msg);return}if(navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.active&&r.active.postMessage(msg))}
 
 // Render
@@ -700,7 +711,14 @@ function render(){
   empty.style.display='none';lbl.style.display='block';
   list.innerHTML=up.map(r=>`<div class="r-card"><div class="r-ico ${r.importance}">${r.importance==='urgent'?'🚨':'🔔'}</div><div class="r-body"><div class="r-msg">${r.message}</div><div class="r-meta"><span class="r-badge ${r.importance}">${r.importance==='urgent'?'URGENT':'NORMAL'}</span><span id="cd-${r.id}">${cd(r.datetime)}</span> · ${fmt(r.datetime)}</div></div><button class="r-del" onclick="delR('${r.id}')">✕</button></div>`).join('');
 }
-function delR(id){reminders=reminders.filter(r=>r.id!==id);save();swMsg({type:'DELETE',id});syncToWorker();render()}
+
+function delR(id){
+  reminders=reminders.filter(r=>r.id!==id);
+  save();
+  swMsg({type:'DELETE',id});
+  syncToWorker();
+  render();
+}
 
 // Check
 function checkLoop(){
@@ -763,11 +781,13 @@ async function sendAI(){
     const now=new Date();
     const added=(parsed.reminders||[]).map(r=>({...r,id:uid()})).filter(r=>new Date(r.datetime)>now);
     if(!added.length)throw new Error('Aucune heure future dans la demande');
-    reminders=[...reminders,...added];save();
+    reminders=[...reminders,...added];
+    save(); // ✅ sauvegarde immédiate dans localStorage
     added.forEach(r=>swMsg({type:'ADD',reminder:r}));
-    syncToWorker();
+    setTimeout(()=>syncToWorker(),500); // ✅ délai pour s'assurer que save() est terminé
     status.textContent=parsed.summary||`${added.length} rappel(s) créé(s)`;
-    document.getElementById('ai-input').value='';render();
+    document.getElementById('ai-input').value='';
+    render();
     setTimeout(()=>{status.textContent=''},5000);
   }catch(e){
     status.style.color='var(--cu)';status.textContent='⚠ '+(e.message||'Erreur');
@@ -775,7 +795,6 @@ async function sendAI(){
   }
   btn.disabled=false;
 }
-
 
 // Vocal reminder announcement
 function isVoiceTimeActive(){
@@ -788,7 +807,7 @@ function isVoiceTimeActive(){
   return cur>=from&&cur<=to;
 }
 
-function speakReminder(message, importance){
+function speakReminder(message,importance){
   if(!isVoiceTimeActive())return;
   if(!window.speechSynthesis)return;
   const rate=cfg.remindRate||0.9;
@@ -804,11 +823,9 @@ function speakReminder(message, importance){
 }
 
 function testRemindVoice(imp){
-  const msg=imp==='urgent'?`Rappel urgent ! Vérifier vos positions de trading maintenant.`:`Rappel : Pensez à boire de l'eau.`;
-  // Temporarily enable for test
   const wasOff=!cfg.remindVoice;
   cfg.remindVoice=true;
-  speakReminder(imp==='urgent'?`Vérifier vos positions de trading maintenant.`:`Pensez à boire de l'eau.`,imp);
+  speakReminder(imp==='urgent'?'Vérifier vos positions de trading maintenant.':'Pensez à boire de l\'eau.',imp);
   if(wasOff)cfg.remindVoice=false;
 }
 
@@ -828,7 +845,7 @@ function getWxAdvice(code,temp){
 async function fetchWeather(){
   if(!wxCoords)return;
   try{
-    const {lat,lon}=wxCoords;
+    const{lat,lon}=wxCoords;
     const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode&timezone=auto`);
     const data=await res.json();
     const temp=Math.round(data.current.temperature_2m);
@@ -876,40 +893,41 @@ async function checkWxReminder(){
   }
 }
 
-
 // Android notification settings
-function openAndroidNotifSettings() {
-  // Try to open Android app notification settings
-  // This works when installed as PWA
-  const intentUrl = 'intent://settings/APP_NOTIFICATION_SETTINGS#Intent;scheme=android-app;package=com.android.settings;end';
-  try {
-    window.location.href = intentUrl;
-  } catch(e) {}
-  // Fallback: show guide
-  setTimeout(() => showNotifGuide(), 500);
+function openAndroidNotifSettings(){
+  const intentUrl='intent://settings/APP_NOTIFICATION_SETTINGS#Intent;scheme=android-app;package=com.android.settings;end';
+  try{window.location.href=intentUrl;}catch(e){}
+  setTimeout(()=>showNotifGuide(),500);
 }
 
-function showNotifGuide() {
-  const g = document.getElementById('notif-guide');
-  if (g) g.style.display = g.style.display === 'none' ? 'block' : 'none';
+function showNotifGuide(){
+  const g=document.getElementById('notif-guide');
+  if(g)g.style.display=g.style.display==='none'?'block':'none';
 }
 
-
-// Sync reminders to Cloudflare Worker for FCM push
+// ✅ FIX PRINCIPAL : syncToWorker lit depuis localStorage (source de vérité)
 async function syncToWorker(){
   try{
+    const saved=localStorage.getItem('rappel_ia_v3');
+    const remindersToSync=saved?JSON.parse(saved):reminders;
+    if(!remindersToSync.length){
+      console.warn('Sync: rien à envoyer');
+      return;
+    }
     const token=localStorage.getItem('fcm_token');
-    const body={reminders};
+    const body={reminders:remindersToSync};
     if(token)body.token=token;
-    await fetch(WORKER+'/sync',{
+    const res=await fetch(WORKER+'/sync',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(body)
     });
+    const data=await res.json();
+    console.log('Sync OK:', remindersToSync.length, 'rappels envoyés');
   }catch(e){console.warn('Sync:',e)}
 }
 
-// Save FCM token to worker when registered
+// Save FCM token
 async function registerFCMToken(token){
   try{
     localStorage.setItem('fcm_token',token);
@@ -922,10 +940,23 @@ async function registerFCMToken(token){
 }
 
 // Boot
-tick();setInterval(tick,1000);setInterval(checkLoop,60000);checkLoop();load();registerSW();loadSettings();
+tick();
+setInterval(tick,1000);
+setInterval(checkLoop,60000);
+checkLoop();
+load();
+registerSW();
+loadSettings();
 const wxC=localStorage.getItem('wx_coords');if(wxC)wxCoords=JSON.parse(wxC);
 const wxCache=localStorage.getItem('wx_cache');
-if(wxCache){const{temp,desc,ts}=JSON.parse(wxCache);if(Date.now()-ts<3600000){document.getElementById('wx-icon').textContent=desc.split(' ')[0];document.getElementById('wx-temp').textContent=temp+'°C';document.getElementById('wx-desc').textContent=desc.split(' ').slice(1).join(' ');}}
+if(wxCache){
+  const{temp,desc,ts}=JSON.parse(wxCache);
+  if(Date.now()-ts<3600000){
+    document.getElementById('wx-icon').textContent=desc.split(' ')[0];
+    document.getElementById('wx-temp').textContent=temp+'°C';
+    document.getElementById('wx-desc').textContent=desc.split(' ').slice(1).join(' ');
+  }
+}
 getLocation();
 if('Notification'in window&&Notification.permission==='default')document.getElementById('perm-banner').style.display='flex';
 document.getElementById('ai-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI()}});
